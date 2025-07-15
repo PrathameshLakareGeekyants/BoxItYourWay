@@ -34,8 +34,8 @@ export default async function RootLayout({
         <AuthProvider>
           <QueryProvider>
             <div className="flex justify-end w-full p-3">
-              <Link href="/" className="">
-                Home
+              <Link href="/products" className="">
+                Products
               </Link>
               <SignoutButton />
             </div>
