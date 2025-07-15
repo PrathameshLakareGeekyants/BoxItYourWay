@@ -114,9 +114,7 @@ const Signin = () => {
       </div>
       <button
         type="button"
-        onClick={() =>
-          setForm({ email: "test@example.com", password: "password123" })
-        }
+        onClick={() => setForm({ email: "test@example.com", password: "test" })}
         className="block w-1/2 mx-auto mt-2 bg-transparent border border-neutral-900 text-neutral-900 rounded py-1 hover:bg-neutral-100 transition"
       >
         Sign in as Guest
