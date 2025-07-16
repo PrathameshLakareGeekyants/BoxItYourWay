@@ -19,6 +19,7 @@ model User {
   name     String
   email    String  @unique
   password String
+  role Role @default(USER)
   combo Combo[]
 }
 
@@ -59,4 +60,9 @@ model ComboItem{
   product Product @relation(fields: [productId], references: [id])
   productId String
   @@unique([comboId, productId])
+}
+
+enum Role {
+  USER
+  ADMIN
 }
