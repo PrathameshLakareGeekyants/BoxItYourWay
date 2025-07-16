@@ -31,8 +31,8 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex justify-end width-full p-3">
-          <Link href="/" className=" ">
-            Home
+          <Link href="/products" className=" ">
+            Products
           </Link>
           <SignoutButton />
         </div>
