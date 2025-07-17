@@ -55,7 +55,7 @@ model Combo {
 
 model ComboItem{
   id String @id @default(uuid())
-  combo Combo @relation(fields: [comboId], references: [id])
+  combo Combo @relation(fields: [comboId], references: [id], onDelete: Cascade)
   comboId String
   product Product @relation(fields: [productId], references: [id])
   productId String

@@ -57,18 +57,17 @@ export async function POST(req: Request) {
     }
 
     const userId = session?.user?.id;
-
     const body = await req.json();
     const { name, productIds } = body;
 
-    if (!name || !userId) {
+    if (!name || !userId || !Array.isArray(productIds)) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    const newCombo = await prisma.combo.create({
+    const createdCombo = await prisma.combo.create({
       data: {
         name,
-        userId: session.user.id,
+        userId,
         comboItem: {
           create: productIds.map((productId: string) => ({
             product: { connect: { id: productId } },
@@ -77,9 +76,20 @@ export async function POST(req: Request) {
       },
     });
 
+    const fullCombo = await prisma.combo.findUnique({
+      where: { id: createdCombo.id },
+      include: {
+        comboItem: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
     return NextResponse.json({
       message: "New combo created successfully.",
-      newCombo,
+      combo: fullCombo,
       status: 201,
     });
   } catch (error) {
