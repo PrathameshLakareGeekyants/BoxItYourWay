@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    const newCombo = prisma.combo.create({
+    const newCombo = await prisma.combo.create({
       data: {
         name,
         userId: session.user.id,
