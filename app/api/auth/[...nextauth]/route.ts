@@ -71,17 +71,14 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user }: { token: JWT; user?: User }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-      } else if (!token.id && token.email) {
-        // fetch user from DB if id is missing
+      if (user || token.email) {
         const dbUser = await prisma.user.findUnique({
-          where: { email: token.email },
+          where: { email: user?.email ?? token.email ?? undefined },
         });
+
         if (dbUser) {
           token.id = dbUser.id;
+          token.email = dbUser.email;
           token.name = dbUser.name;
         }
       }
