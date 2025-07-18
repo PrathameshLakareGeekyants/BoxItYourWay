@@ -22,7 +22,7 @@ model User {
   role Role @default(USER)
   combo Combo[]
   cart Cart?
-  deleveryInfo DeliveryInfo[]
+  deliveryInfo DeliveryInfo[]
   order Order[]
 }
 
@@ -93,7 +93,7 @@ model DeliveryInfo{
   addressLine String
   city String
   state String
-  postalCode Int
+  postalCode String
   country String
   order Order[]
   createdAt    DateTime @default(now())
@@ -106,6 +106,8 @@ model Order{
   userId String
   delivery DeliveryInfo @relation(fields: [deliveryId], references: [id])
   deliveryId String
+  status OrderStatus @default(PENDING)
+  totalPrice Int
   orderItem OrderItem[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -122,4 +124,12 @@ model OrderItem{
 enum Role {
   USER
   ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }
