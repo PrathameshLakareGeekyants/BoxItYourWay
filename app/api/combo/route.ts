@@ -8,7 +8,7 @@ export async function GET() {
 
     if (!session) {
       return NextResponse.json(
-        { error: "You must be signed in to create a product." },
+        { error: "You must be signed in." },
         { status: 401 }
       );
     }
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
     if (!session) {
       return NextResponse.json(
-        { error: "You must be signed in to create a product." },
+        { error: "You must be signed in." },
         { status: 401 }
       );
     }
