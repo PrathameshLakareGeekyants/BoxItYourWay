@@ -14,7 +14,8 @@ export async function POST(
         { status: 401 }
       );
     }
-    const { comboId } = await params;
+
+    const comboId = params.comboId;
     const combo = await prisma.combo.findUnique({
       where: { id: comboId },
     });
@@ -31,15 +32,14 @@ export async function POST(
     }
 
     const body = await req.json();
-    const { name, productIds } = body;
+    const { updatedProductIds } = body;
 
     const updatedCombo = await prisma.combo.update({
       where: { id: comboId },
       data: {
-        name,
         comboItem: {
           deleteMany: {},
-          create: productIds.map((productId: string) => ({
+          create: updatedProductIds.map((productId: string) => ({
             product: { connect: { id: productId } },
           })),
         },
@@ -58,17 +58,11 @@ export async function POST(
       updatedCombo,
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Server error", serverError: error },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { comboId: string } }
-) {
+export async function DELETE({ params }: { params: { comboId: string } }) {
   try {
     const session = await getAuthSession();
     if (!session) {
@@ -94,22 +88,13 @@ export async function DELETE(
       );
     }
 
-    const deletedCombo = await prisma.combo.delete({
-      where: { id: comboId },
-      include: {
-        comboItem: {
-          include: {
-            product: true,
-          },
-        },
-      },
-    });
+    const deletedCombo = await prisma.combo.delete({ where: { id: comboId } });
 
     return NextResponse.json({
       message: "Combo deleted successfully.",
       deletedCombo,
     });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
