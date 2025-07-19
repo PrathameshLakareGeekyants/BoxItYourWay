@@ -71,19 +71,26 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user }: { token: JWT; user?: User }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
+      if (user || token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user?.email ?? token.email ?? undefined },
+        });
+
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.email = dbUser.email;
+          token.name = dbUser.name;
+          token.role = dbUser.role;
+        }
       }
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      if (token) {
-        if (!session.user) session.user = {};
-        (session.user as any).id = token.id;
-        (session.user as any).email = token.email;
-        (session.user as any).name = token.name;
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        (session.user as any).role = token.role;
       }
       return session;
     },
