@@ -109,6 +109,7 @@ model Order{
   status OrderStatus @default(PENDING)
   totalPrice Int
   orderItem OrderItem[]
+  comboSnapshot Json
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
