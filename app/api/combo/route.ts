@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
     if (!session) {
       return NextResponse.json(
-        { error: "You must be signed in to create a product." },
+        { error: "You must be signed in." },
         { status: 401 }
       );
     }
