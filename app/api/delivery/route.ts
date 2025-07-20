@@ -38,10 +38,10 @@ export async function POST(req: Request) {
     }
 
     const userId = session.user.id;
+    const name = session.user.name || "User";
 
     const body = await req.json();
-    const { name, addressLine, city, state, postalCode, country, contact } =
-      body;
+    const { addressLine, city, state, postalCode, country, contact } = body;
 
     const address = await prisma.deliveryInfo.create({
       data: {
