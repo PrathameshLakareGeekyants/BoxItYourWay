@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthProvider from "../components/AuthProvider";
 import SignoutButton from "./components/common/SignoutButton";
 import Link from "next/link";
+import Navbar from "./components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,11 +31,12 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex justify-end width-full p-3">
-          <Link href="/products" className=" ">
+        <Navbar />
+        <div className="flex justify-end width-full">
+          {/* <Link href="/products" className=" ">
             Products
           </Link>
-          <SignoutButton />
+          <SignoutButton /> */}
         </div>
 
         <AuthProvider>{children}</AuthProvider>
