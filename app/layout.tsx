@@ -5,6 +5,7 @@ import AuthProvider from "../components/AuthProvider";
 import SignoutButton from "./components/common/SignoutButton";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
+import QueryProvider from "./components/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +40,9 @@ export default async function RootLayout({
           <SignoutButton /> */}
         </div>
 
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );
