@@ -5,14 +5,6 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const session = await getAuthSession();
-
-    if (!session) {
-      return NextResponse.json(
-        { error: "You must be signed in." },
-        { status: 401 }
-      );
-    }
-
     const userId = session?.user?.id;
 
     const usersCombos = userId
@@ -56,11 +48,24 @@ export async function POST(req: Request) {
       );
     }
 
-    const userId = session?.user?.id;
     const body = await req.json();
-    const { name, productIds } = body;
+    const { name, productIds, isPublic } = body;
 
-    if (!name || !userId || !Array.isArray(productIds)) {
+    const isAdmin = session.user?.role === "ADMIN" || false;
+    let userId: string | null;
+    if (isPublic && isAdmin) {
+      userId = null;
+    } else {
+      userId = session.user?.id;
+      if (!userId) {
+        return NextResponse.json(
+          { error: "Could not determine userId." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (!name || !Array.isArray(productIds)) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
@@ -74,10 +79,6 @@ export async function POST(req: Request) {
           })),
         },
       },
-    });
-
-    const fullCombo = await prisma.combo.findUnique({
-      where: { id: createdCombo.id },
       include: {
         comboItem: {
           include: {
@@ -89,7 +90,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       message: "New combo created successfully.",
-      combo: fullCombo,
+      combo: createdCombo,
       status: 201,
     });
   } catch (error) {
