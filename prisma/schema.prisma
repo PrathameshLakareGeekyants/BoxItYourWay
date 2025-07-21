@@ -22,6 +22,8 @@ model User {
   role Role @default(USER)
   combo Combo[]
   cart Cart?
+  deliveryInfo DeliveryInfo[]
+  order Order[]
 }
 
 model Product {
@@ -51,6 +53,7 @@ model Combo {
   userId String?
   comboItem ComboItem[]
   cartItem CartItem[]
+  orderItem OrderItem[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -75,13 +78,59 @@ model Cart{
 
 model CartItem{
   id String @id @default(uuid())
-  combo Combo @relation(fields: [comboId], references: [id], onDelete: Cascade)
+  combo Combo @relation(fields: [comboId], references: [id])
   comboId String
-  cart Cart @relation(fields: [cartId], references: [id])
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId String
+}
+
+model DeliveryInfo{
+  id String @id @default(uuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  name String
+  contact String
+  addressLine String
+  city String
+  state String
+  postalCode String
+  country String
+  order Order[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Order{
+  id String @id @default(uuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  delivery DeliveryInfo @relation(fields: [deliveryId], references: [id])
+  deliveryId String
+  status OrderStatus @default(PENDING)
+  totalPrice Int
+  orderItem OrderItem[]
+  comboSnapshot Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model OrderItem{
+  id String @id @default(uuid())
+  order Order @relation(fields: [orderId], references: [id])
+  orderId String
+  combo Combo @relation(fields: [comboId], references: [id])
+  comboId String
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }
