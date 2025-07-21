@@ -73,12 +73,24 @@ export async function DELETE({ params }: { params: { comboId: string } }) {
     }
 
     const comboId = params.comboId;
+
     const combo = await prisma.combo.findUnique({
       where: { id: comboId },
     });
 
     if (!combo) {
       return NextResponse.json({ error: "Combo not found." }, { status: 404 });
+    }
+
+    const orderItem = await prisma.orderItem.findFirst({
+      where: { comboId },
+    });
+
+    if (orderItem) {
+      return NextResponse.json(
+        { error: "This combo has been ordered and cannot be deleted." },
+        { status: 400 }
+      );
     }
 
     if (combo.userId !== session.user.id) {
