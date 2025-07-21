@@ -110,6 +110,6 @@ export async function DELETE(
       deletedCombo,
     });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
