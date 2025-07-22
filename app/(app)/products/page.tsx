@@ -1,8 +1,4 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-
-import { getAuthSession } from "@/lib/service/auth";
 import ProductCard from "@/components/common/ProductCard";
 
 export default async function ProductsPage() {
