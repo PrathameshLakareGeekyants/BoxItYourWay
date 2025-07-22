@@ -21,12 +21,12 @@ export async function POST(req: Request) {
   try {
     const session = await getAuthSession();
 
-    // if (!session) {
-    //   return NextResponse.json(
-    //     { error: "You must be signed in to create a product." },
-    //     { status: 401 }
-    //   );
-    // }
+    if (!session || session.user?.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "You must be an admin." },
+        { status: 403 }
+      );
+    }
 
     const body = await req.json();
     const { name, description, price, imageUrl, stock, categoryId } = body;
@@ -46,7 +46,10 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(newProduct, { status: 201 });
+    return NextResponse.json(
+      { message: "Product created successfully.", newProduct },
+      { status: 201 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to create product" },
