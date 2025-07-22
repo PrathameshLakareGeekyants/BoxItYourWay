@@ -53,7 +53,7 @@ const Signin = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-sm mx-auto mt-10 p-6 bg-white rounded-lg shadow space-y-6"
+      className="mt-10 p-6 bg-white rounded-lg shadow space-y-6"
     >
       <div className="text-center mb-2">
         <span className="text-3xl font-extrabold tracking-tight text-blue-600">
