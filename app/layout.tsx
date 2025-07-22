@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "../components/AuthProvider";
-import SignoutButton from "./components/common/SignoutButton";
-import Link from "next/link";
 import Navbar from "./components/Navbar";
 import QueryProvider from "./components/QueryProvider";
 
@@ -33,12 +31,6 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar />
-        <div className="flex justify-end width-full">
-          {/* <Link href="/products" className=" ">
-            Products
-          </Link>
-          <SignoutButton /> */}
-        </div>
 
         <AuthProvider>
           <QueryProvider>{children}</QueryProvider>

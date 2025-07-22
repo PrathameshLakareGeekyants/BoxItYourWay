@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
-import ProductCard from "../components/common/ProductCard";
+import ProductCard from "../../components/common/ProductCard";
 
 export default async function ProductsPage() {
   const session = await getServerSession(authOptions);
