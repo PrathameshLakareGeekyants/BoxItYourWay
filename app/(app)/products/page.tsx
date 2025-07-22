@@ -1,11 +1,12 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
-import ProductCard from "../../components/common/ProductCard";
+
+import { getAuthSession } from "@/lib/service/auth";
+import ProductCard from "@/components/common/ProductCard";
 
 export default async function ProductsPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getAuthSession();
   if (!session) {
     redirect("/signin");
   }
