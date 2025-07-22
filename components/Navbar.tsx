@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import SignoutButton from "./common/SignoutButton";
 
 function Navbar() {
   return (
@@ -79,10 +80,7 @@ function Navbar() {
           </Button>
 
           {/* Logout */}
-          <Button variant="outline" size="sm">
-            <LogOut className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
+          <SignoutButton />
 
           {/* Mobile Menu */}
           <Mobile />
