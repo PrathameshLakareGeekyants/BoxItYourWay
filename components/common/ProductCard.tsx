@@ -56,7 +56,7 @@ export default function ProductCard({ product }: { product: Product }) {
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button disabled={product.stock === 0} className="w-full">
-          {product.stock > 0 ? "Add to Cart" : "Sold Out"}
+          {product.stock > 0 ? "Add to Combo" : "Sold Out"}
         </Button>
       </CardFooter>
     </Card>
