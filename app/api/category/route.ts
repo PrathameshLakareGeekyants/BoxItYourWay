@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { getAuthSession } from "@/lib/service/auth";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -7,6 +8,15 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const session = await getAuthSession();
+
+  if (!session || session.user?.role !== "ADMIN") {
+    return NextResponse.json(
+      { error: "You must be an admin to update data." },
+      { status: 403 }
+    );
+  }
+
   const body = await req.json();
   const { name } = body;
 

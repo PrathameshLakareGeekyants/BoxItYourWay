@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "../components/AuthProvider";
-import SignoutButton from "./components/common/SignoutButton";
-import Link from "next/link";
-import QueryProvider from "./components/QueryProvider";
+import Navbar from "../components/Navbar";
+import QueryProvider from "../components/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,16 +30,10 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Navbar />
+
         <AuthProvider>
-          <QueryProvider>
-            <div className="flex justify-end w-full p-3">
-              <Link href="/products" className="">
-                Products
-              </Link>
-              <SignoutButton />
-            </div>
-            {children}
-          </QueryProvider>
+          <QueryProvider>{children}</QueryProvider>
         </AuthProvider>
       </body>
     </html>
