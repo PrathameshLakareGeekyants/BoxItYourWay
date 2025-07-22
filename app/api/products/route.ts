@@ -2,13 +2,39 @@ import prisma from "@/lib/prisma";
 import { getAuthSession } from "@/lib/service/auth";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+
+    const search = searchParams.get("search") || "";
+    const categoryId = searchParams.get("categoryId");
+    const where: any = {};
+
+    if (search) {
+      where.name = {
+        contains: search,
+        mode: "insensitive",
+      };
+    }
+
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
+
     const products = await prisma.product.findMany({
-      include: { category: true },
+      where,
+      include: {
+        category: true,
+      },
     });
 
-    return NextResponse.json(products);
+    return NextResponse.json(
+      {
+        message: "Products data fetched successfully.",
+        products,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch products" },
