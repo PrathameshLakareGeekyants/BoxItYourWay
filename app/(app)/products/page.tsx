@@ -6,11 +6,6 @@ import { getAuthSession } from "@/lib/service/auth";
 import ProductCard from "@/components/common/ProductCard";
 
 export default async function ProductsPage() {
-  const session = await getAuthSession();
-  if (!session) {
-    redirect("/signin");
-  }
-
   const products = await prisma.product.findMany();
 
   return (

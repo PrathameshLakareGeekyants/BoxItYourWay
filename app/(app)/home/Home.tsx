@@ -26,7 +26,7 @@ export default async function Home() {
             className="bg-gray-100 hover:bg-gray-200"
             asChild
           >
-            <Link href="/create-combo">Create Custom Combo</Link>
+            <Link href="/products">Create Custom Combo</Link>
           </Button>
         </div>
       </section>
