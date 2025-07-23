@@ -16,9 +16,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import SignoutButton from "./common/SignoutButton";
+import SignoutButton from "./SignoutButton";
+import { getAuthSession } from "@/lib/service/auth";
 
-function Navbar() {
+async function Navbar() {
+  const session = await getAuthSession();
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-4 lg:px-6">
@@ -80,7 +83,13 @@ function Navbar() {
           </Button>
 
           {/* Logout */}
-          <SignoutButton />
+          {session ? (
+            <SignoutButton />
+          ) : (
+            <Button variant="outline" size="sm">
+              <Link href="/signin">Sign In</Link>
+            </Button>
+          )}
 
           {/* Mobile Menu */}
           <Mobile />
