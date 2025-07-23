@@ -1,4 +1,4 @@
-import { PRODUCTS_API } from "@/app/constants";
+import { PRODUCTS_API } from "@/constants";
 import { fetchData } from "./fetcher";
 
 export async function getProducts(category?: string) {

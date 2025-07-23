@@ -30,5 +30,8 @@ export async function POST(req: Request) {
     },
   });
 
-  return NextResponse.json(newCategory, { status: 201 });
+  return NextResponse.json(
+    { message: "Category created successfully.", newCategory },
+    { status: 201 }
+  );
 }
