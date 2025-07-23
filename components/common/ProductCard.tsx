@@ -5,7 +5,9 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import AddToCombo from "../AddToCombo";
+import Link from "next/link";
+import AddToCart from "../AddToCart";
 
 type Product = {
   id: string;
@@ -23,16 +25,18 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Card className="w-full max-w-sm shadow-lg rounded-xl overflow-hidden bg-background">
       <CardHeader className="p-0">
-        <div className="relative w-full h-56">
-          <Image
-            src={product.imageUrl}
-            alt={product.name}
-            fill
-            className="object-cover rounded-t-xl"
-            sizes="(max-width: 640px) 100vw, 400px"
-            priority
-          />
-        </div>
+        <Link href={`/products/${product.id}`}>
+          <div className="relative w-full h-56">
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              className="object-cover rounded-t-xl"
+              sizes="(max-width: 640px) 100vw, 400px"
+              priority
+            />
+          </div>
+        </Link>
       </CardHeader>
       <CardContent className="p-4">
         <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
@@ -54,11 +58,10 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <Button disabled={product.stock === 0} className="w-full">
-          {product.stock > 0 ? "Add to Combo" : "Sold Out"}
-        </Button>
-      </CardFooter>
+      <div className="p-4 pt-0">
+        <AddToCart stock={product.stock} className="w-full mb-2" />
+        <AddToCombo stock={product.stock} className={"w-full"} />
+      </div>
     </Card>
   );
 }
