@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import SignoutButton from "./SignoutButton";
 import { getAuthSession } from "@/lib/service/auth";
+import SigninButton from "./SigninButton";
 
 async function Navbar() {
   const session = await getAuthSession();
@@ -56,7 +57,7 @@ async function Navbar() {
           </NavigationMenu>
         </div>
 
-        <div className="hidden md:flex flex-1 justify-center px-6">
+        {/* <div className="hidden md:flex flex-1 justify-center px-6">
           <div className="relative w-full max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -65,33 +66,27 @@ async function Navbar() {
               className="pl-10 bg-background"
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="flex items-center gap-2">
           {/* Mobile Search */}
-          <Button variant="ghost" size="icon" className="md:hidden">
+          {/* <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
-          </Button>
+          </Button> */}
 
-          {/* Cart */}
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/cart">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="sr-only">Cart</span>
-            </Link>
-          </Button>
-
-          {/* Logout */}
-          {session ? (
-            <SignoutButton />
-          ) : (
-            <Button variant="outline" size="sm">
-              <Link href="/signin">Sign In</Link>
+          <div className="flex items-center gap-4">
+            {/* Cart */}
+            <Button variant="ghost" size="icon" className="px-10" asChild>
+              <Link href="/cart" className="flex items-center gap-1">
+                <ShoppingBag className="h-5 w-5" />
+                <span className="">Cart</span>
+              </Link>
             </Button>
-          )}
 
-          {/* Mobile Menu */}
+            {session?.user ? <SignoutButton /> : <SigninButton />}
+          </div>
+
           <Mobile />
         </div>
       </div>
@@ -119,7 +114,7 @@ function Mobile() {
         <SheetHeader>
           <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
           <SheetDescription className="sr-only">
-            Access navigation links and search functionality
+            Access navigation links
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-col gap-4 mt-2">
@@ -135,14 +130,14 @@ function Mobile() {
           >
             Combos
           </Link>
-          <div className="relative mt-4">
+          {/* <div className="relative mt-4">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search products..."
               className="pl-10"
             />
-          </div>
+          </div> */}
         </div>
       </SheetContent>
     </Sheet>

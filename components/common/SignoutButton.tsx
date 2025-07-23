@@ -12,7 +12,7 @@ const SignoutButton = () => {
         onClick={() => signOut({ callbackUrl: "/signin" })}
       >
         <LogOut className="h-4 w-4 mr-2" />
-        <span className="hidden sm:inline">Logout</span>
+        <span className="hidden sm:inline">Sign out</span>
       </Button>
     </>
   );
