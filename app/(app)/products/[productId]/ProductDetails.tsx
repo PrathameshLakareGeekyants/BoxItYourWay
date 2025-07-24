@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
-import AddToCombo from "@/components/common/AddToCombo";
+import AddToCombo from "@/components/combo/AddToCombo";
 import AddToCart from "@/components/common/AddToCart";
 
 export default function ProductDetail({
@@ -56,7 +56,11 @@ export default function ProductDetail({
 
           <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex">
             <AddToCart stock={product.stock} className="w-full sm:w-48" />
-            <AddToCombo stock={product.stock} className="w-full sm:w-48" />
+            <AddToCombo
+              stock={product.stock}
+              productId={product.id}
+              className="w-full sm:w-48"
+            />
           </div>
 
           <div className="text-sm text-gray-500 space-y-1">

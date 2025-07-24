@@ -5,7 +5,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import AddToCombo from "./AddToCombo";
+import AddToCombo from "../combo/AddToCombo";
 import Link from "next/link";
 import AddToCart from "./AddToCart";
 
@@ -60,7 +60,11 @@ export default function ProductCard({ product }: { product: Product }) {
       </CardContent>
       <div className="p-4 pt-0">
         <AddToCart stock={product.stock} className="w-full mb-2" />
-        <AddToCombo stock={product.stock} className={"w-full"} />
+        <AddToCombo
+          stock={product.stock}
+          productId={product.id}
+          className={"w-full"}
+        />
       </div>
     </Card>
   );

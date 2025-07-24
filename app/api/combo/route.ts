@@ -50,6 +50,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { name, productIds, isPublic } = body;
+    const productIdsArray = Array.isArray(productIds) ? productIds : [];
 
     const isAdmin = session.user?.role === "ADMIN" || false;
     let userId: string | null;
@@ -65,7 +66,7 @@ export async function POST(req: Request) {
       }
     }
 
-    if (!name || !Array.isArray(productIds)) {
+    if (!name) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
         name,
         userId,
         comboItem: {
-          create: productIds.map((productId: string) => ({
+          create: productIdsArray.map((productId: string) => ({
             product: { connect: { id: productId } },
           })),
         },

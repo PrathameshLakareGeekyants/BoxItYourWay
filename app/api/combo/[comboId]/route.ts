@@ -70,7 +70,6 @@ export async function POST(
 
     const body = await req.json();
     const { productIds } = body;
-    console.log(body);
 
     const updatedCombo = await prisma.combo.update({
       where: { id: comboId },
