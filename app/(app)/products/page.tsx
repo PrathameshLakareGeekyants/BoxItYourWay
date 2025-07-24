@@ -1,8 +1,8 @@
-import prisma from "@/lib/prisma";
 import ProductCard from "@/components/common/ProductCard";
+import { getProductData } from "@/app/actions/productAction";
 
 export default async function ProductsPage() {
-  const products = await prisma.product.findMany();
+  const products = await getProductData();
 
   return (
     <div className="min-h-screen bg-gray-50">
