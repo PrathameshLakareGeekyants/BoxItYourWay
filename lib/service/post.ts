@@ -3,7 +3,6 @@ import axios from "axios";
 export async function postData<T = any>(url: string, data: any): Promise<T> {
   try {
     const response = await axios.post(url, data);
-    console.log(data);
     if (response.status !== 200) {
       throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
