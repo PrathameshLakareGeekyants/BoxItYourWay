@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
-import AddToCombo from "@/components/AddToCombo";
-import AddToCart from "@/components/AddToCart";
+import AddToCombo from "@/components/common/AddToCombo";
+import AddToCart from "@/components/common/AddToCart";
 
 export default function ProductDetail({
   product,

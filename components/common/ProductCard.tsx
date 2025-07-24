@@ -5,9 +5,9 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import AddToCombo from "../AddToCombo";
+import AddToCombo from "./AddToCombo";
 import Link from "next/link";
-import AddToCart from "../AddToCart";
+import AddToCart from "./AddToCart";
 
 type Product = {
   id: string;
