@@ -1,5 +1,5 @@
 import { COMBO_API } from "@/constants";
-import { fetchData } from "./fetcher";
+import { fetchData } from "../network/fetcher";
 import { postData } from "./post";
 
 export async function getCombo() {

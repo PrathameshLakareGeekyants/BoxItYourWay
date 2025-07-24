@@ -99,7 +99,10 @@ export async function POST(
   }
 }
 
-export async function DELETE({ params }: { params: { comboId: string } }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { comboId: string } }
+) {
   try {
     const session = await getAuthSession();
     if (!session) {
