@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { deliveryId: string } }
+  params: Promise<{ deliveryId: string }>
 ) {
   try {
     const session = await getAuthSession();
@@ -12,7 +12,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { deliveryId } = params;
+    const { deliveryId } = await params;
     const body = await req.json();
     const { addressLine, city, state, postalCode, country, contact } = body;
 
@@ -35,7 +35,7 @@ export async function POST(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { deliveryId: string } }
+  params: Promise<{ deliveryId: string }>
 ) {
   try {
     const session = await getAuthSession();
@@ -43,7 +43,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { deliveryId } = params;
+    const { deliveryId } = await params;
 
     await prisma.deliveryInfo.delete({
       where: {
