@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { comboId: string } }
+  { params }: { params: Promise<{ comboId: string }> }
 ) {
   try {
     const awaitedParams = await params;
@@ -40,7 +40,7 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { comboId: string } }
+  { params }: { params: Promise<{ comboId: string }> }
 ) {
   try {
     const session = await getAuthSession();
@@ -99,7 +99,10 @@ export async function POST(
   }
 }
 
-export async function DELETE({ params }: { params: { comboId: string } }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ comboId: string }> }
+) {
   try {
     const session = await getAuthSession();
     if (!session) {
@@ -109,7 +112,8 @@ export async function DELETE({ params }: { params: { comboId: string } }) {
       );
     }
 
-    const comboId = params.comboId;
+    const awaitedParams = await params;
+    const comboId = awaitedParams.comboId;
 
     const combo = await prisma.combo.findUnique({
       where: { id: comboId },
