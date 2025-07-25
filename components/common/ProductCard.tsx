@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import AddToCombo from "../combo/AddToCombo";
 import Link from "next/link";
-import AddToCart from "./AddToCart";
+import AddToCart from "../cart/AddToCart";
 
 type Product = {
   id: string;

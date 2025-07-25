@@ -1,6 +1,6 @@
 import Image from "next/image";
 import DeleteComboButton from "./DeleteComboButton";
-import AddToCart from "@/components/common/AddToCart";
+import AddToCart from "@/components/cart/AddToCart";
 
 type Product = {
   id: string;
