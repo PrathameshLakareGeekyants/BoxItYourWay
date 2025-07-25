@@ -1,8 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { addToCart } from "@/lib/service/cart";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useSession } from "next-auth/react";
+import { use } from "react";
 
 interface Combo {
   id: string;
@@ -12,11 +15,24 @@ interface Combo {
 export default function AddToCart({
   stock,
   className,
+  productId,
+  comboId,
 }: {
   stock: number;
   className?: string;
+  productId?: string;
+  comboId?: string;
 }) {
   const { data: session } = useSession();
+
+  const queryClient = useQueryClient();
+
+  const { data } = useMutation({
+    mutationFn: () => addToCart({ productId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
 
   if (!session) {
     return (
