@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     const session = await getAuthSession();
@@ -16,7 +16,8 @@ export async function POST(
       );
     }
 
-    const { orderId } = params;
+    const awaitedParams = await params;
+    const { orderId } = awaitedParams;
     const { status } = await req.json();
 
     const allowedStatuses = [
