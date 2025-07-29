@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  params: Promise<{ deliveryId: string }>
+  { params }: { params: Promise<{ deliveryId: string }> }
 ) {
   try {
     const session = await getAuthSession();
@@ -35,7 +35,7 @@ export async function POST(
 
 export async function DELETE(
   _req: NextRequest,
-  params: Promise<{ deliveryId: string }>
+  { params }: { params: Promise<{ deliveryId: string }> }
 ) {
   try {
     const session = await getAuthSession();

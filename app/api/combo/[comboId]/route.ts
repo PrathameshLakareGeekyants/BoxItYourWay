@@ -2,9 +2,14 @@ import prisma from "@/lib/prisma";
 import { getAuthSession } from "@/lib/service/auth";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request, params: Promise<{ comboId: string }>) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ comboId: string }> }
+) {
   try {
     const awaitedParams = await params;
+
+    console.log("testing", awaitedParams);
     const comboId = awaitedParams.comboId;
     const session = await getAuthSession();
 
@@ -17,6 +22,7 @@ export async function GET(req: Request, params: Promise<{ comboId: string }>) {
         },
       },
     });
+
     if (!combo) {
       return NextResponse.json({ error: "Combo not found." }, { status: 404 });
     }
@@ -31,11 +37,14 @@ export async function GET(req: Request, params: Promise<{ comboId: string }>) {
       combo,
     });
   } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 
-export async function POST(req: Request, params: Promise<{ comboId: string }>) {
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ comboId: string }> }
+) {
   try {
     const session = await getAuthSession();
     if (!session) {
@@ -89,13 +98,13 @@ export async function POST(req: Request, params: Promise<{ comboId: string }>) {
       updatedCombo,
     });
   } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 
 export async function DELETE(
   req: Request,
-  params: Promise<{ comboId: string }>
+  { params }: { params: Promise<{ comboId: string }> }
 ) {
   try {
     const session = await getAuthSession();

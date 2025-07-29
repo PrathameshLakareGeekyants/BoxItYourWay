@@ -2,7 +2,10 @@ import prisma from "@/lib/prisma";
 import { getAuthSession } from "@/lib/service/auth";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request, params: Promise<{ orderId: string }>) {
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ orderId: string }> }
+) {
   try {
     const session = await getAuthSession();
 
