@@ -65,6 +65,10 @@ model ComboItem{
   comboId String
   product Product @relation(fields: [productId], references: [id])
   productId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  
   @@unique([comboId, productId])
 }
 
@@ -86,6 +90,8 @@ model CartItem{
   cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId String
   quantity Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 
   @@unique([cartId, comboId])
   @@unique([cartId, productId])
@@ -127,6 +133,8 @@ model OrderItem{
   orderId String
   combo Combo @relation(fields: [comboId], references: [id])
   comboId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 enum Role {
