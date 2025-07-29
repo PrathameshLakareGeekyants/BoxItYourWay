@@ -33,7 +33,7 @@ export default async function RootLayout({
         <AuthProvider>
           <QueryProvider>{children}</QueryProvider>
         </AuthProvider>
-        <Toaster />
+        <Toaster closeButton={true} />
       </body>
     </html>
   );

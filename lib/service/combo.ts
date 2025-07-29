@@ -1,6 +1,6 @@
 import { COMBO_API } from "@/constants";
 import { fetchData } from "../network/fetcher";
-import { postData } from "./post";
+import { postData } from "../network/post";
 
 export async function getCombo() {
   return fetchData(COMBO_API);
@@ -20,6 +20,7 @@ export async function createCombo(comboData: {
 
 export async function addToCombo(comboId: string, productIds: string[]) {
   const combo = await getComboById(comboId);
+
   if (!combo) {
     throw new Error(`Combo with ID ${comboId} not found`);
   }

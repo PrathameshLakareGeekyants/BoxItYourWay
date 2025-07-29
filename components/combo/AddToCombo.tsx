@@ -17,7 +17,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { Loader2Icon } from "lucide-react";
 import CreateCombo from "./CreateCombo";
-import { set } from "react-hook-form";
 import { toast } from "sonner";
 
 interface Combo {

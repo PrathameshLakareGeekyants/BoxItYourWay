@@ -8,6 +8,8 @@ export async function GET(
 ) {
   try {
     const awaitedParams = await params;
+
+    console.log("testing", awaitedParams);
     const comboId = awaitedParams.comboId;
     const session = await getAuthSession();
 
@@ -20,6 +22,7 @@ export async function GET(
         },
       },
     });
+
     if (!combo) {
       return NextResponse.json({ error: "Combo not found." }, { status: 404 });
     }
@@ -34,7 +37,7 @@ export async function GET(
       combo,
     });
   } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 
@@ -95,7 +98,7 @@ export async function POST(
       updatedCombo,
     });
   } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 

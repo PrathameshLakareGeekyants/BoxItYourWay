@@ -16,8 +16,7 @@ export async function POST(
       );
     }
 
-    const awaitedParams = await params;
-    const { orderId } = awaitedParams;
+    const { orderId } = await params;
     const { status } = await req.json();
 
     const allowedStatuses = [

@@ -17,7 +17,13 @@ export async function GET() {
     const cart = await prisma.cart.findUnique({
       where: { userId },
       include: {
-        cartItem: { include: { combo: { include: { comboItem: true } } } },
+        cartItem: {
+          include: {
+            combo: { include: { comboItem: { include: { product: true } } } },
+            product: true,
+          },
+          orderBy: { createdAt: "asc" },
+        },
       },
     });
 
@@ -26,6 +32,7 @@ export async function GET() {
       cart,
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }
@@ -43,32 +50,74 @@ export async function POST(req: Request) {
 
     const userId = session.user.id;
     const body = await req.json();
-    const { comboIds } = body;
+    const { comboId, productId } = body;
+    console.log(productId);
 
-    if (!userId || !Array.isArray(comboIds) || comboIds.length === 0) {
+    if (!comboId && !productId) {
       return NextResponse.json(
-        { error: "Missing or invalid comboIds." },
+        { error: "Either comboId or productId must be provided." },
         { status: 400 }
       );
     }
 
-    const cart = await prisma.cart.create({
-      data: {
-        userId,
-        cartItem: {
-          create: comboIds.map((comboId: string) => ({
-            comboId,
-          })),
+    const existingCart = await prisma.cart.findUnique({
+      where: { userId },
+      include: { cartItem: true },
+    });
+
+    if (!existingCart) {
+      // Create a new cart
+      const newCart = await prisma.cart.create({
+        data: {
+          userId,
+          cartItem: {
+            create: comboId
+              ? { comboId, quantity: 1 }
+              : { productId, quantity: 1 },
+          },
         },
-      },
-      include: {
-        cartItem: true,
+        include: { cartItem: true },
+      });
+      return NextResponse.json(newCart, { status: 201 });
+    }
+
+    let cartItem;
+    if (comboId) {
+      cartItem = existingCart.cartItem.find((item) => item.comboId === comboId);
+    } else if (productId) {
+      cartItem = existingCart.cartItem.find(
+        (item) => item.productId === productId
+      );
+    }
+
+    if (cartItem) {
+      await prisma.cartItem.update({
+        where: { id: cartItem.id },
+        data: { quantity: cartItem.quantity + 1 },
+      });
+
+      const updatedCart = await prisma.cart.findUnique({
+        where: { id: existingCart.id },
+        include: { cartItem: true },
+      });
+      return NextResponse.json(updatedCart, { status: 200 });
+    }
+
+    await prisma.cartItem.create({
+      data: {
+        cartId: existingCart.id,
+        comboId: comboId || undefined,
+        productId: productId || undefined,
       },
     });
 
-    return NextResponse.json(cart, { status: 201 });
+    const updatedCart = await prisma.cart.findUnique({
+      where: { id: existingCart.id },
+      include: { cartItem: true },
+    });
+    return NextResponse.json(updatedCart, { status: 201 });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

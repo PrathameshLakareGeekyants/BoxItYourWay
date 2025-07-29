@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import AddToCombo from "../combo/AddToCombo";
 import Link from "next/link";
-import AddToCart from "./AddToCart";
+import AddToCart from "../cart/AddToCart";
 
 type Product = {
   id: string;
@@ -58,8 +58,12 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
       </CardContent>
-      <div className="p-4 pt-0">
-        <AddToCart stock={product.stock} className="w-full mb-2" />
+      <div className="p-4 pt-0 mt-auto">
+        <AddToCart
+          stock={product.stock}
+          productId={product.id}
+          className="w-full mb-2"
+        />
         <AddToCombo
           stock={product.stock}
           productId={product.id}

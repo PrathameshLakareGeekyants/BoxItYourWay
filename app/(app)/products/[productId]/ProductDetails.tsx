@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import AddToCombo from "@/components/combo/AddToCombo";
-import AddToCart from "@/components/common/AddToCart";
+import AddToCart from "@/components/cart/AddToCart";
 
 export default function ProductDetail({
   product,

@@ -13,7 +13,7 @@ export default function Hero() {
           festivals, we help you express your feelings with curated combo boxes.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="bg-blue-500 hover:bg-blue-700" asChild>
+          <Button size="lg" asChild>
             <Link href="/products">Shop Now</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
