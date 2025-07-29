@@ -20,7 +20,9 @@ export async function GET() {
         cartItem: {
           include: {
             combo: { include: { comboItem: { include: { product: true } } } },
+            product: true,
           },
+          orderBy: { createdAt: "asc" },
         },
       },
     });
@@ -49,6 +51,7 @@ export async function POST(req: Request) {
     const userId = session.user.id;
     const body = await req.json();
     const { comboId, productId } = body;
+    console.log(productId);
 
     if (!comboId && !productId) {
       return NextResponse.json(
