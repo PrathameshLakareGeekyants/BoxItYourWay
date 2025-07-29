@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CartPage from "./CartPage";
 
-export default function () {
+export default function CartPageHandler() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
