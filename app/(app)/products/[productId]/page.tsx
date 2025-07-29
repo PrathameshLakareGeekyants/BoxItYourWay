@@ -4,7 +4,7 @@ import ProductDetail from "./ProductDetails";
 export default async function ProductPage({
   params,
 }: {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }) {
   const awaitedParams = await params;
   const productId = awaitedParams?.productId;

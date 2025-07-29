@@ -1,0 +1,11 @@
+echo "🛠 Running pre-push hook: Building Next.js app..."
+
+npm run build
+
+if [ $? -ne 0 ]; then
+  echo "❌ Build failed. Push aborted."
+  exit 1
+fi
+
+echo "✅ Build successful. Proceeding with push."
+exit 0
