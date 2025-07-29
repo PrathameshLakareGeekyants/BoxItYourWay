@@ -5,12 +5,7 @@ import { addToCart } from "@/lib/service/cart";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useSession } from "next-auth/react";
-import { use } from "react";
-
-interface Combo {
-  id: string;
-  name: string;
-}
+import { toast } from "sonner";
 
 export default function AddToCart({
   stock,
@@ -27,9 +22,21 @@ export default function AddToCart({
 
   const queryClient = useQueryClient();
 
-  const { data } = useMutation({
-    mutationFn: () => addToCart({ productId }),
+  const { mutate, data } = useMutation({
+    mutationFn: () => {
+      if (productId) return addToCart({ productId });
+      if (comboId) return addToCart({ comboId });
+      throw new Error("No product or combo to add to cart!");
+    },
+    onError: (error) => {
+      toast.error(
+        error.message || "Failed to add to cart. Please try again later."
+      );
+    },
     onSuccess: () => {
+      if (productId) toast.success("Product added to cart successfully!");
+      if (comboId) toast.success("Combo added to cart successfully!");
+
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
@@ -43,7 +50,11 @@ export default function AddToCart({
   }
 
   return (
-    <Button className={className} disabled={stock <= 0}>
+    <Button
+      className={className}
+      disabled={stock <= 0}
+      onClick={() => mutate()}
+    >
       {stock < 0 ? "Not in stock" : "Add to Cart"}
     </Button>
   );

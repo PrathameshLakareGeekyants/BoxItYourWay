@@ -58,7 +58,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
       </CardContent>
-      <div className="p-4 pt-0">
+      <div className="p-4 pt-0 mt-auto">
         <AddToCart
           stock={product.stock}
           productId={product.id}

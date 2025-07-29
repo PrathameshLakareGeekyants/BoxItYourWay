@@ -72,7 +72,7 @@ export default function ComboCard({ combo, isPublic }: ComboCardProps) {
         )}
       </div>
       <div className="flex flex-col gap-3 mt-auto">
-        <AddToCart stock={22} className="" />
+        <AddToCart stock={22} className="" comboId={combo?.id} />
 
         {!isPublic && (
           <div className="pt-4 flex items-center justify-between text-xs text-gray-400">
