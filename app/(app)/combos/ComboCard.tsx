@@ -1,6 +1,7 @@
 import Image from "next/image";
 import DeleteComboButton from "./DeleteComboButton";
 import AddToCart from "@/components/cart/AddToCart";
+import ComboImagesBar from "@/components/combo/ComboImageBar";
 
 type Product = {
   id: string;
@@ -24,6 +25,10 @@ type Combo = {
   userId: string | null;
   createdAt: string | Date;
   updatedAt: string | Date;
+  totalPrice?: number;
+  discountAmount?: number;
+  perUnitPrice?: number;
+  perUnitDiscount?: number;
   comboItem: ComboItem[];
 };
 
@@ -34,32 +39,53 @@ interface ComboCardProps {
 
 export default function ComboCard({ combo, isPublic }: ComboCardProps) {
   return (
-    <div className="flex flex-col border rounded-lg shadow-sm p-5 bg-white max-w-xl mx-auto mb-6 h-full">
-      <h3 className="text-xl font-semibold mb-2">{combo.name}</h3>
-      <div className="flex flex-col gap-3">
+    <div className="flex flex-col border rounded-xl shadow-md bg-white max-w-xl mx-auto p-5 mb-8 h-full transition hover:shadow-lg relative overflow-hidden">
+      {combo.comboItem.length > 0 && (
+        <div className="mb-1">
+          <ComboImagesBar comboItems={combo.comboItem} />
+        </div>
+      )}
+
+      <span className="absolute top-4 right-4 bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
+        Combo
+      </span>
+
+      <h3 className="text-2xl font-bold mb-2 tracking-tight text-gray-900">
+        {combo.name}
+      </h3>
+
+      <div
+        className={`flex flex-col gap-3 mb-3 ${
+          combo.comboItem.length > 3 ? "max-h-[340px] overflow-y-auto pr-2" : ""
+        }`}
+      >
         {combo.comboItem.length > 0 ? (
           combo.comboItem.map((item) => {
             const product = item.product;
             return (
               <div
                 key={item.id}
-                className="flex items-center gap-4 border p-3 rounded"
+                className="flex items-center gap-4 border p-3 rounded-lg bg-gray-50"
               >
                 <Image
                   src={product.imageUrl}
                   alt={product.name}
-                  width={72}
-                  height={72}
-                  className="rounded object-cover"
+                  width={56}
+                  height={56}
+                  className="rounded-lg object-cover border border-gray-200"
                 />
                 <div className="flex-1">
-                  <div className="font-medium">{product.name}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="font-medium text-gray-800">
+                    {product.name}
+                  </div>
+                  <div className="text-xs text-gray-500">
                     {product.description}
                   </div>
                   <div className="text-sm mt-1">
-                    <span className="font-semibold">₹{product.price}</span>
-                    <span className="ml-4 text-gray-500">
+                    <span className="font-semibold text-gray-600">
+                      ₹{product.price}
+                    </span>
+                    <span className="ml-4 text-gray-400">
                       {product.stock} in stock
                     </span>
                   </div>
@@ -71,6 +97,17 @@ export default function ComboCard({ combo, isPublic }: ComboCardProps) {
           <div className="italic text-gray-400">No products in this combo.</div>
         )}
       </div>
+      {combo?.totalPrice && (
+        <div className="my-2 text-base font-semibold text-gray-900">
+          Total Price: ₹{combo.totalPrice.toFixed(2)}
+          {combo.discountAmount && combo.discountAmount > 0 && (
+            <span className="ml-3 text-sm font-normal text-gray-600">
+              Save ₹{combo.discountAmount.toFixed(2)}
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 mt-auto">
         <AddToCart stock={22} className="" comboId={combo?.id} />
 
