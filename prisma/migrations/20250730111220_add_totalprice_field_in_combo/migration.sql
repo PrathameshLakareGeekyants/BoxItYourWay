@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Combo" ADD COLUMN     "discountAmount" DOUBLE PRECISION,
+ADD COLUMN     "perUnitDiscount" DOUBLE PRECISION,
+ADD COLUMN     "perUnitPrice" DOUBLE PRECISION,
+ADD COLUMN     "totalPrice" DOUBLE PRECISION;
