@@ -123,9 +123,7 @@ export default function AddressBook() {
 
       {/* Addresses?.deliveryInfos */}
       <div>
-        <h2 className="text-xl font-bold mb-4">
-          Saved Addresses?.deliveryInfos
-        </h2>
+        <h2 className="text-xl font-bold mb-4">Saved Addresses</h2>
         {isLoading ? (
           <div>Loading...</div>
         ) : isError ? (
