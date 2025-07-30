@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { getCartItems } from "@/lib/service/cart";
@@ -169,11 +169,19 @@ export default function OrderPage() {
   }
 
   return (
-    <OrderReview
-      cart={cartData.cart}
-      address={address.deliveryInfo}
-      isPlacingOrder={verifyMutation.isPending}
-      onPlaceOrder={handleStartPayment}
-    />
+    <Suspense
+      fallback={
+        <div className="max-w-3xl mx-auto mt-16 text-center">
+          Loading order details...
+        </div>
+      }
+    >
+      <OrderReview
+        cart={cartData.cart}
+        address={address.deliveryInfo}
+        isPlacingOrder={verifyMutation.isPending}
+        onPlaceOrder={handleStartPayment}
+      />
+    </Suspense>
   );
 }
