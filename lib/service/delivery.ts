@@ -18,3 +18,7 @@ export async function createDeliveryInfo(data: {
 
   return res;
 }
+
+export async function fetchDeliveryInfoById(deliveryId: string) {
+  return fetchData(`${DELIVERY_API}/${deliveryId}`);
+}
