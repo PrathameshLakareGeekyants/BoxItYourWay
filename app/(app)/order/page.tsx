@@ -142,29 +142,63 @@ export default function OrderPage() {
 
   if (isCartLoading || isAddressLoading) {
     return (
-      <div className="max-w-3xl mx-auto mt-16 text-center text-lg">
-        Loading...
-      </div>
+      <Suspense
+        fallback={
+          <div className="max-w-3xl mx-auto mt-16 text-center">
+            Loading order details...
+          </div>
+        }
+      >
+        <div className="max-w-3xl mx-auto mt-16 text-center text-lg">
+          Loading...
+        </div>
+      </Suspense>
     );
   }
 
   if (!addressId || !address?.deliveryInfo) {
     return (
-      <div className="max-w-3xl mx-auto mt-16 text-center">
-        No delivery address selected.
-      </div>
+      <Suspense
+        fallback={
+          <div className="max-w-3xl mx-auto mt-16 text-center">
+            Loading order details...
+          </div>
+        }
+      >
+        <div className="max-w-3xl mx-auto mt-16 text-center">
+          No delivery address selected.
+        </div>
+      </Suspense>
     );
   }
 
   if (paymentDone && placedOrder) {
-    return <OrderConfirmation order={placedOrder} />;
+    return (
+      <Suspense
+        fallback={
+          <div className="max-w-3xl mx-auto mt-16 text-center">
+            Loading order details...
+          </div>
+        }
+      >
+        <OrderConfirmation order={placedOrder} />
+      </Suspense>
+    );
   }
 
   if (!cartData?.cart || cartData.cart.cartItem.length === 0) {
     return (
-      <div className="max-w-3xl mx-auto mt-16 text-center">
-        Your cart is empty.
-      </div>
+      <Suspense
+        fallback={
+          <div className="max-w-3xl mx-auto mt-16 text-center">
+            Loading order details...
+          </div>
+        }
+      >
+        <div className="max-w-3xl mx-auto mt-16 text-center">
+          Your cart is empty.
+        </div>
+      </Suspense>
     );
   }
 
