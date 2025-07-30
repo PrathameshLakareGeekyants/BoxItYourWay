@@ -2,6 +2,44 @@ import prisma from "@/lib/prisma";
 import { getAuthSession } from "@/lib/service/auth";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ deliveryId: string }> }
+) {
+  try {
+    const session = await getAuthSession();
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "You must be signed in." },
+        { status: 401 }
+      );
+    }
+
+    const { deliveryId } = await params;
+
+    const userId = session?.user.id;
+
+    const deliveryInfo = await prisma.deliveryInfo.findUnique({
+      where: { id: deliveryId, userId },
+    });
+
+    if (!deliveryInfo) {
+      return NextResponse.json(
+        { error: "Address not found." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      message: "Delivery address fetch successfully.",
+      deliveryInfo,
+    });
+  } catch (error) {
+    return NextResponse.json({ error: "Server error." }, { status: 500 });
+  }
+}
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ deliveryId: string }> }
