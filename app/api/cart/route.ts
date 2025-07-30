@@ -14,6 +14,7 @@ export async function GET() {
     }
 
     const userId = session.user.id;
+
     const cart = await prisma.cart.findUnique({
       where: { userId },
       include: {
@@ -27,12 +28,42 @@ export async function GET() {
       },
     });
 
+    if (cart && cart.cartItem) {
+      cart.cartItem = cart.cartItem.map((item) => {
+        if (item.combo) {
+          const products = item.combo.comboItem.map((ci) => ci.product);
+          const total = products.reduce(
+            (sum, prod) => sum + (prod?.price || 0),
+            0
+          );
+          let discount = 0;
+          if (products.length > 2) {
+            discount = total * 0.05;
+          }
+          const discountedTotal = total - discount;
+          const finalComboTotal = discountedTotal * item.quantity;
+
+          return {
+            ...item,
+            combo: {
+              ...item.combo,
+              totalPrice: finalComboTotal,
+              discountApplied: discount > 0,
+              discountAmount: discount * item.quantity,
+              perUnitPrice: discountedTotal,
+              perUnitDiscount: discount,
+            },
+          };
+        }
+        return item;
+      });
+    }
+
     return NextResponse.json({
       message: "Cart data fetch successfully.",
       cart,
     });
   } catch (error) {
-    console.log(error);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }
@@ -51,7 +82,6 @@ export async function POST(req: Request) {
     const userId = session.user.id;
     const body = await req.json();
     const { comboId, productId } = body;
-    console.log(productId);
 
     if (!comboId && !productId) {
       return NextResponse.json(

@@ -9,7 +9,6 @@ export async function GET(
   try {
     const awaitedParams = await params;
 
-    console.log("testing", awaitedParams);
     const comboId = awaitedParams.comboId;
     const session = await getAuthSession();
 
@@ -56,6 +55,7 @@ export async function POST(
 
     const awaitedParams = await params;
     const comboId = awaitedParams.comboId;
+
     const combo = await prisma.combo.findUnique({
       where: { id: comboId },
     });
@@ -74,6 +74,7 @@ export async function POST(
     const body = await req.json();
     const { productIds } = body;
 
+    // Update combo items: delete all existing and create new ones
     const updatedCombo = await prisma.combo.update({
       where: { id: comboId },
       data: {
@@ -93,12 +94,54 @@ export async function POST(
       },
     });
 
+    //  Calculate discount fields only if there are products
+    let totalPrice = 0;
+
+    let discountAmount = 0;
+    let perUnitPrice = 0;
+    let perUnitDiscount = 0;
+
+    if (updatedCombo.comboItem.length > 0) {
+      const productPrices = updatedCombo.comboItem.map(
+        (item) => item.product?.price || 0
+      );
+      const unitTotal = productPrices.reduce((sum, price) => sum + price, 0);
+
+      if (productPrices.length > 2) {
+        discountAmount = unitTotal * 0.05;
+      } else {
+        discountAmount = 0;
+      }
+
+      perUnitDiscount = discountAmount;
+      perUnitPrice = unitTotal - discountAmount;
+      totalPrice = perUnitPrice;
+    }
+
+    const comboWithDiscounts = await prisma.combo.update({
+      where: { id: comboId },
+      data: {
+        totalPrice,
+        discountAmount,
+        perUnitPrice,
+        perUnitDiscount,
+      },
+      include: {
+        comboItem: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
     return NextResponse.json({
       message: "Combo updated successfully.",
-      updatedCombo,
+      updatedCombo: comboWithDiscounts,
     });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    console.error("Error updating combo:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
