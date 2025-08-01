@@ -26,7 +26,7 @@ export default function Features() {
 
   return (
     <>
-      <section className="py-10 px-8 ">
+      <section className="py-10 px-8 opacity-80">
         <div className="mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
           {featuresIconsData.map(({ icon, title, desc }) => (
             <div

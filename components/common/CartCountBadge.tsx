@@ -1,16 +1,25 @@
 "use client";
+import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { getCartItems } from "@/lib/service/cart";
 
 export default function CartCountBadge() {
-  const { data } = useQuery({ queryKey: ["cart"], queryFn: getCartItems });
+  const { data: session, status } = useSession();
+
+  const { data } = useQuery({
+    queryKey: ["cart"],
+    queryFn: getCartItems,
+    enabled: status === "authenticated",
+  });
+
+  if (status !== "authenticated") return null;
+
   const cartCount =
     data?.cart?.cartItem?.reduce(
       (acc: number, curr: any) => acc + (curr.quantity ?? 1),
       0
     ) || 0;
 
-  // Hide if zero
   if (!cartCount) return null;
 
   return (
