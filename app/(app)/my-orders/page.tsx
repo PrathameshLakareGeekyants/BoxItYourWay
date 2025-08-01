@@ -1,10 +1,54 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "@/lib/service/order";
+import { useSession, signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 export default function MyOrdersPage() {
-  const { data } = useQuery({ queryKey: ["orders"], queryFn: getOrders });
+  const { data: session, status } = useSession();
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["orders"],
+    queryFn: getOrders,
+    enabled: status === "authenticated",
+  });
+
   const orders = data?.orders;
+
+  if (status === "loading") {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center text-lg">
+        Loading session...
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <p className="mb-4 text-lg font-semibold">
+          You need to sign in to see your orders.
+        </p>
+        <Button onClick={() => signIn()}>Sign In</Button>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center text-lg">
+        Loading orders...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center text-red-600 text-lg">
+        Failed to load orders. Please try again later.
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
