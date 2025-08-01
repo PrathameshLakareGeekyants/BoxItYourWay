@@ -4,6 +4,7 @@ import {
   RAZORPAY_VERIFY_ORDER_API,
 } from "@/constants";
 import { postData } from "../network/post";
+import { fetchData } from "../network/fetcher";
 
 export async function placeOrder({ deliveryId }: { deliveryId: string }) {
   return postData(`${ORDER_API}`, { deliveryId });
@@ -30,4 +31,8 @@ export async function verifyRazorpayOrder({
     razorpay_signature,
     deliveryId,
   });
+}
+
+export async function getOrders() {
+  return fetchData(`${ORDER_API}`);
 }
