@@ -4,6 +4,30 @@ import ComboCard from "./ComboCard";
 export default async function ComboPage() {
   const combos = await getComboData();
 
+  const sanitizedPublicCombos =
+    combos.publicCombos?.map((combo) => ({
+      ...combo,
+      totalPrice: combo.totalPrice === null ? undefined : combo.totalPrice,
+      discountAmount:
+        combo.discountAmount === null ? undefined : combo.discountAmount,
+      perUnitPrice:
+        combo.perUnitPrice === null ? undefined : combo.perUnitPrice,
+      perUnitDiscount:
+        combo.perUnitDiscount === null ? undefined : combo.perUnitDiscount,
+    })) || [];
+
+  const sanitizedUserCombos =
+    combos.userCombos?.map((combo) => ({
+      ...combo,
+      totalPrice: combo.totalPrice === null ? undefined : combo.totalPrice,
+      discountAmount:
+        combo.discountAmount === null ? undefined : combo.discountAmount,
+      perUnitPrice:
+        combo.perUnitPrice === null ? undefined : combo.perUnitPrice,
+      perUnitDiscount:
+        combo.perUnitDiscount === null ? undefined : combo.perUnitDiscount,
+    })) || [];
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-4 text-center">Combo Gallery</h1>
@@ -14,9 +38,9 @@ export default async function ComboPage() {
       {/* Public combos */}
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-2">Discover Combos</h2>
-        {combos.publicCombos && combos.publicCombos.length > 0 ? (
+        {sanitizedPublicCombos.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {combos.publicCombos.map((combo) => (
+            {sanitizedPublicCombos.map((combo) => (
               <ComboCard key={combo.id} combo={combo} isPublic={true} />
             ))}
           </div>
@@ -26,11 +50,11 @@ export default async function ComboPage() {
       </section>
 
       {/* My combos */}
-      {combos.userCombos && combos.userCombos.length > 0 && (
+      {sanitizedUserCombos.length > 0 && (
         <section>
           <h2 className="text-lg font-semibold mb-2">My Custom Combos</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {combos.userCombos.map((combo) => (
+            {sanitizedUserCombos.map((combo) => (
               <ComboCard key={combo.id} combo={combo} isPublic={false} />
             ))}
           </div>

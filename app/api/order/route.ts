@@ -5,15 +5,13 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const session = await getAuthSession();
-
     if (!session) {
       return NextResponse.json(
         { error: "You must be signed in." },
         { status: 401 }
       );
     }
-
-    const userId = session?.user?.id;
+    const userId = session.user.id;
 
     const orders = await prisma.order.findMany({
       where: { userId },
@@ -28,6 +26,7 @@ export async function GET() {
                 },
               },
             },
+            product: true,
           },
         },
         delivery: true,
@@ -46,91 +45,104 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const session = await getAuthSession();
-
     if (!session) {
       return NextResponse.json(
         { error: "You must be signed in." },
         { status: 401 }
       );
     }
-
-    const userId = session?.user?.id;
+    const userId = session.user.id;
     const body = await req.json();
-    const { deliveryId, comboIds, totalPrice } = body;
-    const totalPriceInt = parseInt(totalPrice, 10);
+    const { deliveryId } = body;
 
-    if (
-      !deliveryId ||
-      !userId ||
-      !Array.isArray(comboIds) ||
-      !comboIds.length ||
-      typeof totalPriceInt !== "number"
-    ) {
+    if (!deliveryId || !userId) {
       return NextResponse.json(
-        { error: "Missing or invalid fields" },
+        { error: "Missing deliveryId or you are not authenticated" },
         { status: 400 }
       );
     }
 
-    const combos = await prisma.combo.findMany({
-      where: { id: { in: comboIds } },
+    const cart = await prisma.cart.findUnique({
+      where: { userId },
       include: {
-        comboItem: {
-          include: { product: true },
+        cartItem: {
+          include: {
+            product: true,
+            combo: {
+              include: { comboItem: { include: { product: true } } },
+            },
+          },
         },
       },
     });
 
-    // snapshot of combo items
-    const comboSnapshot = combos.map((combo) => ({
-      id: combo.id,
-      name: combo.name,
-      comboItems: combo.comboItem.map((item) => ({
-        id: item.id,
-        product: {
-          id: item.product.id,
-          name: item.product.name,
-          description: item.product.description,
-          price: item.product.price,
-          imageUrl: item.product.imageUrl,
-        },
-      })),
-    }));
+    if (!cart || cart.cartItem.length === 0) {
+      return NextResponse.json({ error: "Cart is empty." }, { status: 400 });
+    }
 
-    const order = await prisma.order.create({
+    let totalPrice = 0;
+
+    const orderItemsData = cart.cartItem
+      .map((item) => {
+        if (item.product) {
+          totalPrice += item.quantity * item.product.price;
+          return {
+            product: { connect: { id: item.product.id } },
+            quantity: item.quantity,
+            price: item.product.price,
+          };
+        }
+        if (item.combo) {
+          const comboProducts = item.combo.comboItem.map(
+            (cItem) => cItem.product
+          );
+          const comboTotal = comboProducts.reduce(
+            (sum, prod) => sum + (prod?.price || 0),
+            0
+          );
+          totalPrice += item.quantity * comboTotal;
+          return {
+            combo: { connect: { id: item.combo.id } },
+            quantity: item.quantity,
+            price: comboTotal,
+          };
+        }
+        return null;
+      })
+      .filter((item) => item !== null && item !== undefined);
+
+    // Create the order
+    const newOrder = await prisma.order.create({
       data: {
         userId,
         deliveryId,
-        totalPrice: totalPriceInt,
-        comboSnapshot,
-        orderItem: {
-          create: comboIds.map((comboId: string) => ({
-            combo: { connect: { id: comboId } },
-          })),
-        },
+        totalPrice,
+        orderItem: { create: orderItemsData },
       },
       include: {
         orderItem: {
           include: {
             combo: {
               include: {
-                comboItem: {
-                  include: { product: true },
-                },
+                comboItem: { include: { product: true } },
               },
             },
+            product: true,
           },
         },
         delivery: true,
       },
     });
 
+    await prisma.cart.delete({ where: { id: cart.id } });
+
     return NextResponse.json({
       message: "Order placed successfully.",
-      order,
+      order: newOrder,
       status: 201,
     });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

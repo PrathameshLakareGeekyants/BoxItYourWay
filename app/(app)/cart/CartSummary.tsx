@@ -24,6 +24,7 @@ type Combo = {
   createdAt: string;
   updatedAt: string;
   comboItem: ComboItem[];
+  totalPrice: number;
 };
 
 type CartItem = {
@@ -54,7 +55,7 @@ interface CartSummaryProps {
 
 export default function CartSummary({
   cart,
-  deliveryCharge = 50,
+  deliveryCharge = 0,
 }: CartSummaryProps) {
   const combosInCart = cart?.cartItem?.filter((item) => item.combo).length;
   const itemsInCart = cart?.cartItem?.reduce(
@@ -67,11 +68,7 @@ export default function CartSummary({
       return sum + item.quantity * (item.product.price || 0);
     }
     if (item.combo) {
-      const comboTotal = item?.combo?.comboItem?.reduce(
-        (comboSum, cItem) => comboSum + (cItem.product?.price || 0),
-        0
-      );
-      return sum + item.quantity * comboTotal;
+      return sum + item.combo.totalPrice;
     }
     return sum;
   }, 0);
@@ -79,7 +76,7 @@ export default function CartSummary({
   const grandTotal = totalPrice + (itemsInCart === 0 ? 0 : deliveryCharge);
 
   return (
-    <div className="rounded-lg border p-6 bg-white shadow-lg max-w-md w-full">
+    <div className="rounded-lg border p-6 bg-white shadow-lg w-full">
       <h2 className="text-lg font-bold mb-4">Order Summary</h2>
       <div className="flex justify-between mb-2">
         <span>Combos in Cart:</span>

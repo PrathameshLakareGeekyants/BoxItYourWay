@@ -32,7 +32,6 @@ export default function ProductCard({ product }: { product: Product }) {
               alt={product.name}
               fill
               className="object-cover rounded-t-xl"
-              sizes="(max-width: 640px) 100vw, 400px"
               priority
             />
           </div>

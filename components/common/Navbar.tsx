@@ -19,6 +19,7 @@ import {
 import SignoutButton from "./SignoutButton";
 import { getAuthSession } from "@/lib/service/auth";
 import SigninButton from "./SigninButton";
+import CartCountBadge from "./CartCountBadge";
 
 async function Navbar() {
   const session = await getAuthSession();
@@ -53,6 +54,16 @@ async function Navbar() {
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href="/my-orders"
+                    className="inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                  >
+                    My Orders
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -77,10 +88,11 @@ async function Navbar() {
 
           <div className="flex items-center gap-4">
             {/* Cart */}
-            <Button variant="ghost" size="icon" className="px-10" asChild>
-              <Link href="/cart" className="flex items-center gap-1">
+            <Button variant="secondary" size="icon" className="px-10" asChild>
+              <Link href="/cart" className="relative flex items-center">
                 <ShoppingBag className="h-5 w-5" />
-                <span className="">Cart</span>
+                <span className="ml-1">Cart</span>
+                <CartCountBadge />
               </Link>
             </Button>
 
@@ -129,6 +141,12 @@ function Mobile() {
             className="text-sm font-medium hover:text-primary"
           >
             Combos
+          </Link>
+          <Link
+            href="/my-orders"
+            className="text-sm font-medium hover:text-primary"
+          >
+            My Orders
           </Link>
           {/* <div className="relative mt-4">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

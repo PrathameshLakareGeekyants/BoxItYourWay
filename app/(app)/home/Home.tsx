@@ -1,35 +1,33 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+"use client";
 
+import Link from "next/link";
+
+import { Gift, Truck, ShieldCheck, Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Hero from "./Hero";
 import Features from "./Feature";
 
-export default async function Home() {
+export default function Home() {
   return (
-    <div className="min-h-screen">
+    <main className="min-h-screen bg-white container mx-auto px-4 py-8">
       <Hero />
+
       <Features />
 
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-pink-50 text-gray">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">
-            Ready to Create Your Perfect Box?
+      <section className="py-12 flex justify-center">
+        <div className="bg-gradient-to-br from-indigo-50 to-pink-50 border rounded-xl p-12 flex flex-col items-center shadow-md">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 text-center">
+            Make Someone’s Day
           </h2>
-          <p className="text-xl mb-8 opacity-90">
-            Start customizing your combo box today and make someone's day
-            special
+          <p className="text-gray-600 mb-6 text-center">
+            Create a combo, write a note, and we’ll handle the rest. All your
+            gifting needs, one tidy box.
           </p>
-          <Button
-            size="lg"
-            variant="outline"
-            className="bg-gray-100 hover:bg-gray-200"
-            asChild
-          >
-            <Link href="/products">Create Custom Combo</Link>
+          <Button size="lg" className="px-10" asChild>
+            <Link href="/products">Get Started</Link>
           </Button>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

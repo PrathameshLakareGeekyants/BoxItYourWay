@@ -70,22 +70,50 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
+    let totalPrice: number | undefined = undefined;
+
+    let discountAmount: number | undefined = undefined;
+    let perUnitPrice: number | undefined = undefined;
+    let perUnitDiscount: number | undefined = undefined;
+
+    if (productIdsArray.length > 0) {
+      const products = await prisma.product.findMany({
+        where: { id: { in: productIdsArray } },
+        select: { price: true },
+      });
+      const unitTotal = products.reduce(
+        (sum, prod) => sum + (prod.price || 0),
+        0
+      );
+
+      let discount = 0;
+      if (products.length > 2) {
+        discount = unitTotal * 0.05;
+      }
+      perUnitDiscount = discount;
+      perUnitPrice = unitTotal - discount;
+      totalPrice = perUnitPrice;
+      discountAmount = discount;
+    }
+
     const createdCombo = await prisma.combo.create({
       data: {
         name,
         userId,
-        comboItem: {
-          create: productIdsArray.map((productId: string) => ({
-            product: { connect: { id: productId } },
-          })),
-        },
+        totalPrice,
+        discountAmount,
+        perUnitPrice,
+        perUnitDiscount,
+        comboItem: productIdsArray.length
+          ? {
+              create: productIdsArray.map((productId: string) => ({
+                product: { connect: { id: productId } },
+              })),
+            }
+          : undefined,
       },
       include: {
-        comboItem: {
-          include: {
-            product: true,
-          },
-        },
+        comboItem: { include: { product: true } },
       },
     });
 

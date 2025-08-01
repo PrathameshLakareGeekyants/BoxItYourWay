@@ -2,9 +2,9 @@ import prisma from "@/lib/prisma";
 import { getAuthSession } from "@/lib/service/auth";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(req: Request) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
 
     const search = searchParams.get("search") || "";
     const categoryId = searchParams.get("categoryId");

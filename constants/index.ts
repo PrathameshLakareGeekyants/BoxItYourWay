@@ -5,3 +5,6 @@ export const CATEGORIES_API = `${API_BASE_URL}/categories`;
 export const COMBO_API = `${API_BASE_URL}/combo`;
 export const CART_API = `${API_BASE_URL}/cart`;
 export const DELIVERY_API = `${API_BASE_URL}/delivery`;
+export const ORDER_API = `${API_BASE_URL}/order`;
+export const RAZORPAY_ORDER_API = `${API_BASE_URL}/razorpay-order`;
+export const RAZORPAY_VERIFY_ORDER_API = `${API_BASE_URL}/verify-razorpay-payment`;
