@@ -119,6 +119,25 @@ export async function POST(req: Request) {
       },
     });
 
+    for (const orderItem of newOrder.orderItem) {
+      if (orderItem.product) {
+        await prisma.product.update({
+          where: { id: orderItem.product.id },
+          data: { stock: { decrement: orderItem.quantity } },
+        });
+      }
+
+      if (orderItem.combo) {
+        const singleComboItem = orderItem.combo.comboItem[0];
+        if (singleComboItem) {
+          await prisma.product.update({
+            where: { id: singleComboItem.product.id },
+            data: { stock: { decrement: orderItem.quantity } },
+          });
+        }
+      }
+    }
+
     await prisma.cart.delete({ where: { id: cart.id } });
 
     return NextResponse.json(
