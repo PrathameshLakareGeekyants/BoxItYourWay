@@ -6,6 +6,9 @@ export async function getProductData() {
     include: {
       category: true,
     },
+    orderBy: {
+      createdAt: "asc",
+    },
   });
 
   return products;
