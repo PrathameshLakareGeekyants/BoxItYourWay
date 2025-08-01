@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 import OrderConfirmation from "./OrderConfirmation";
 import OrderReview from "./OrderReview";
+import Spinner from "@/components/Spinner"; // Import spinner here
 
 import { razorpayOrder, verifyRazorpayOrder } from "@/lib/service/order";
 
@@ -38,6 +39,7 @@ export default function OrderPage() {
 
   const [placedOrder, setPlacedOrder] = useState<any>(null);
   const [paymentDone, setPaymentDone] = useState(false);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
 
   const { data: cartData, isLoading: isCartLoading } = useQuery({
     queryKey: ["cart"],
@@ -50,7 +52,6 @@ export default function OrderPage() {
     enabled: !!addressId,
   });
 
-  // Mutation to verify payment and create order in DB
   const verifyMutation = useMutation({
     mutationFn: verifyRazorpayOrder,
     onSuccess: (data) => {
@@ -65,7 +66,6 @@ export default function OrderPage() {
     },
   });
 
-  // Handle clicking "Pay Now" to initiate Razorpay payment
   const handleStartPayment = async () => {
     if (!cartData?.cart || cartData.cart.cartItem.length === 0) {
       toast.error("Cart is empty.");
@@ -77,13 +77,14 @@ export default function OrderPage() {
     }
 
     try {
+      setIsPaymentLoading(true);
+
       const totalAmount = cartData.cart.cartItem.reduce(
         (sum: number, item: any) => {
           if (item.product) {
             return sum + item.product.price * item.quantity;
           }
           if (item.combo) {
-            // Use pre-calculated discounted price from combo
             return sum + item.combo.totalPrice;
           }
           return sum;
@@ -91,16 +92,15 @@ export default function OrderPage() {
         0
       );
 
-      // Create Razorpay order on backend
       const razorpayOrderResponse = await razorpayOrder({
         amount: totalAmount,
       });
       const razorpayOrderId = razorpayOrderResponse.id;
 
-      // Load Razorpay checkout script
       const loaded = await loadRazorpayScript();
       if (!loaded) {
         toast.error("Failed to load Razorpay SDK");
+        setIsPaymentLoading(false);
         return;
       }
 
@@ -120,20 +120,29 @@ export default function OrderPage() {
           contact: "9999999999",
         },
         theme: { color: "#3399cc" },
+        modal: {
+          ondismiss: () => {
+            setIsPaymentLoading(false);
+          },
+        },
       };
 
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error: any) {
       toast.error(error.message || "Error initiating payment.");
+      setIsPaymentLoading(false);
     }
   };
 
   const handlePaymentSuccess = (paymentDetails: RazorpayPaymentDetails) => {
     if (!addressId) {
       toast.error("Delivery address missing.");
+      setIsPaymentLoading(false);
       return;
     }
+
+    setIsPaymentLoading(false);
     verifyMutation.mutate({
       ...paymentDetails,
       deliveryId: addressId,
@@ -144,6 +153,14 @@ export default function OrderPage() {
     return (
       <div className="max-w-3xl mx-auto mt-16 text-center text-lg">
         Loading...
+      </div>
+    );
+  }
+
+  if (isPaymentLoading) {
+    return (
+      <div className="max-w-3xl mx-auto mt-16">
+        <Spinner />
       </div>
     );
   }
@@ -172,7 +189,7 @@ export default function OrderPage() {
     <OrderReview
       cart={cartData.cart}
       address={address.deliveryInfo}
-      isPlacingOrder={verifyMutation.isPending}
+      isPlacingOrder={verifyMutation.isPending || isPaymentLoading}
       onPlaceOrder={handleStartPayment}
     />
   );
