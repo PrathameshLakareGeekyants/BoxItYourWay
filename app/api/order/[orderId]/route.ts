@@ -34,7 +34,7 @@ export async function POST(
       where: { id: orderId },
       data: { status },
       include: {
-        orderItem: true,
+        orderItems: true,
         delivery: true,
       },
     });
