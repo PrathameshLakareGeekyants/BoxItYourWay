@@ -99,12 +99,20 @@ export default function CartSummary({
         <span>₹{grandTotal}</span>
       </div>
 
-      <Button
-        disabled={itemsInCart === 0}
-        className="w-full py-2 px-4 rounded bg-green-600 hover:bg-green-700 text-white font-bold text-lg transition"
-      >
-        <Link href={"/address"}>Place Order</Link>
-      </Button>
+      {itemsInCart === 0 ? (
+        <Button
+          disabled
+          className="w-full py-2 px-4 rounded bg-green-600 hover:bg-green-700 text-white font-bold text-lg transition"
+        >
+          Place Order
+        </Button>
+      ) : (
+        <Link href="/order/order-options" passHref>
+          <Button className="w-full py-2 px-4 rounded bg-green-600 hover:bg-green-700 text-white font-bold text-lg transition">
+            Place Order
+          </Button>
+        </Link>
+      )}
     </div>
   );
 }
