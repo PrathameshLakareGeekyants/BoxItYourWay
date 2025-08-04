@@ -21,6 +21,9 @@ export async function POST(req: Request) {
       razorpay_payment_id,
       razorpay_signature,
       deliveryId,
+      orderTagId,
+      wrapId,
+      preferenceId,
     } = await req.json();
 
     if (
@@ -100,12 +103,15 @@ export async function POST(req: Request) {
         userId,
         deliveryId,
         totalPrice,
+        orderTagId,
+        wrapId,
+        preferenceId,
         paymentStatus: "paid",
         razorpayOrderId: razorpay_order_id,
-        orderItem: { create: orderItemsData },
+        orderItems: { create: orderItemsData },
       },
       include: {
-        orderItem: {
+        orderItems: {
           include: {
             combo: {
               include: {
@@ -119,7 +125,7 @@ export async function POST(req: Request) {
       },
     });
 
-    for (const orderItem of newOrder.orderItem) {
+    for (const orderItem of newOrder.orderItems) {
       if (orderItem.product) {
         await prisma.product.update({
           where: { id: orderItem.product.id },
