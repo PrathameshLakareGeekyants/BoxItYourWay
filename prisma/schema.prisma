@@ -121,7 +121,7 @@ model DeliveryInfo{
 
 model OrderTag{
   id String @id @default(uuid())
-  name String
+  name String @unique
   isPublic Boolean @default(false)
   price Int @default(0)
   createdBy User @relation(fields: [userId], references: [id])
@@ -133,7 +133,7 @@ model OrderTag{
 
 model Wrap{
   id String @id @default(uuid())
-  name String
+  name String @unique
   isPremium Boolean @default(false)
   price Int @default(0)
   imageUrl  String
