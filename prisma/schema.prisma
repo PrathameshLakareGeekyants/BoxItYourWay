@@ -153,6 +153,7 @@ model Order{
   userId String
   delivery DeliveryInfo @relation(fields: [deliveryId], references: [id])
   deliveryId String
+  deliveryCharge Int @default(250)
   status OrderStatus @default(PENDING)
   totalPrice Int
   orderItems OrderItem[]
