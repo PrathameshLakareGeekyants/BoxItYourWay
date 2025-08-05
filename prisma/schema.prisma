@@ -142,7 +142,7 @@ model Wrap{
 
 model PreferencePrice {
   id         String     @id @default(uuid())
-  preference Preference
+  preference Preference @unique
   price      Int
   orders Order[]
 }
