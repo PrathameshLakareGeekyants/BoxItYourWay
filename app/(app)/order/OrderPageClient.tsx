@@ -77,7 +77,9 @@ export default function OrderPage() {
   });
 
   const totalOrderOptionPrice =
-    orderTagData?.price + wrapData?.price + preferenceData?.price;
+    (orderTagData?.price ?? 0) +
+    (wrapData?.price ?? 0) +
+    (preferenceData?.price ?? 0);
 
   const handleStartPayment = async () => {
     if (!cartData?.cart || cartData.cart.cartItem.length === 0) {
@@ -92,8 +94,8 @@ export default function OrderPage() {
     try {
       setIsPaymentLoading(true);
 
-      const totalAmount =
-        cartData.cart.cartItem.reduce((sum: number, item: any) => {
+      let totalAmount = cartData.cart.cartItem.reduce(
+        (sum: number, item: any) => {
           if (item.product) {
             return sum + item.product.price * item.quantity;
           }
@@ -102,10 +104,14 @@ export default function OrderPage() {
           }
 
           return sum;
-        }, 0) + totalOrderOptionPrice;
+        },
+        0
+      );
+
+      const finaleAmount = totalAmount + totalOrderOptionPrice;
 
       const razorpayOrderResponse = await razorpayOrder({
-        amount: totalAmount,
+        amount: finaleAmount,
       });
       const razorpayOrderId = razorpayOrderResponse.id;
 

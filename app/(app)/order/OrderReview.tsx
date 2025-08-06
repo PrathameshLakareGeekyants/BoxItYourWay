@@ -109,10 +109,9 @@ export default function OrderReview({
                   ? item.product.price * item.quantity
                   : item.combo
                   ? item.combo.totalPrice
-                  : 0) +
-                orderOptionsPrice,
+                  : 0),
               0
-            )}
+            ) + orderOptionsPrice}
           </div>
         </CardContent>
       </Card>
