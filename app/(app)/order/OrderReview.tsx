@@ -43,6 +43,7 @@ interface OrderReviewProps {
   cart: Cart;
   address: Address;
   isPlacingOrder: boolean;
+  orderOptionsPrice: number;
   onPlaceOrder: () => void;
 }
 
@@ -51,6 +52,7 @@ export default function OrderReview({
   address,
   isPlacingOrder,
   onPlaceOrder,
+  orderOptionsPrice,
 }: OrderReviewProps) {
   return (
     <div className="max-w-3xl mx-auto mt-8 space-y-6">
@@ -93,6 +95,10 @@ export default function OrderReview({
                 </span>
               </li>
             ))}
+            <li className="flex items-center justify-between">
+              <span>Order Options</span>
+              <span>₹{orderOptionsPrice}</span>
+            </li>
           </ul>
           <div className="mt-4 flex justify-end font-semibold">
             Total: ₹
@@ -103,7 +109,8 @@ export default function OrderReview({
                   ? item.product.price * item.quantity
                   : item.combo
                   ? item.combo.totalPrice
-                  : 0),
+                  : 0) +
+                orderOptionsPrice,
               0
             )}
           </div>

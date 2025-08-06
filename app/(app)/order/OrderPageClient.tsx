@@ -12,6 +12,9 @@ import OrderReview from "./OrderReview";
 import Spinner from "@/components/Spinner"; // Import spinner here
 
 import { razorpayOrder, verifyRazorpayOrder } from "@/lib/service/order";
+import { useCart } from "@/hooks/cart";
+import { useDeliveryAddressById } from "@/hooks/delivery";
+import { useOrderTagById, usePreferenceById, useWrapById } from "@/hooks/order";
 
 type RazorpayPaymentDetails = {
   razorpay_payment_id: string;
@@ -19,7 +22,12 @@ type RazorpayPaymentDetails = {
   razorpay_signature: string;
 };
 
-type VerifyRazorpayOrderInput = RazorpayPaymentDetails & { deliveryId: string };
+type VerifyRazorpayOrderInput = RazorpayPaymentDetails & {
+  deliveryId: string;
+  wrapId: string;
+  orderTagId: string;
+  preferenceId: string;
+};
 
 function loadRazorpayScript(): Promise<boolean> {
   return new Promise((resolve) => {
@@ -35,22 +43,24 @@ function loadRazorpayScript(): Promise<boolean> {
 export default function OrderPage() {
   const searchParams = useSearchParams();
   const addressId = searchParams.get("addressId");
+  const orderTagId = searchParams.get("orderTagId");
+  const wrapId = searchParams.get("wrapId");
+  const preferenceId = searchParams.get("preferenceId");
   const queryClient = useQueryClient();
 
   const [placedOrder, setPlacedOrder] = useState<any>(null);
   const [paymentDone, setPaymentDone] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
 
-  const { data: cartData, isLoading: isCartLoading } = useQuery({
-    queryKey: ["cart"],
-    queryFn: getCartItems,
-  });
+  const { data: cartData, isLoading: isCartLoading } = useCart();
 
-  const { data: address, isLoading: isAddressLoading } = useQuery({
-    queryKey: ["deliveryInfo", addressId],
-    queryFn: () => fetchDeliveryInfoById(addressId!),
-    enabled: !!addressId,
-  });
+  const { data: address, isLoading: isAddressLoading } =
+    useDeliveryAddressById(addressId);
+  const { data: orderTagData, isLoading: isOrderTagLoading } =
+    useOrderTagById(orderTagId);
+  const { data: preferenceData, isLoading: isPreferenceLoading } =
+    usePreferenceById(preferenceId);
+  const { data: wrapData, isLoading: isWrapLoading } = useWrapById(wrapId);
 
   const verifyMutation = useMutation({
     mutationFn: verifyRazorpayOrder,
@@ -66,31 +76,33 @@ export default function OrderPage() {
     },
   });
 
+  const totalOrderOptionPrice =
+    orderTagData?.price + wrapData?.price + preferenceData?.price;
+
   const handleStartPayment = async () => {
     if (!cartData?.cart || cartData.cart.cartItem.length === 0) {
       toast.error("Cart is empty.");
       return;
     }
-    if (!addressId) {
-      toast.error("Delivery address missing.");
+    if (!addressId || !orderTagId || !preferenceId || !wrapId) {
+      toast.error("Some required fields are missing.");
       return;
     }
 
     try {
       setIsPaymentLoading(true);
 
-      const totalAmount = cartData.cart.cartItem.reduce(
-        (sum: number, item: any) => {
+      const totalAmount =
+        cartData.cart.cartItem.reduce((sum: number, item: any) => {
           if (item.product) {
             return sum + item.product.price * item.quantity;
           }
           if (item.combo) {
             return sum + item.combo.totalPrice;
           }
+
           return sum;
-        },
-        0
-      );
+        }, 0) + totalOrderOptionPrice;
 
       const razorpayOrderResponse = await razorpayOrder({
         amount: totalAmount,
@@ -146,10 +158,19 @@ export default function OrderPage() {
     verifyMutation.mutate({
       ...paymentDetails,
       deliveryId: addressId,
+      wrapId,
+      orderTagId,
+      preferenceId,
     } as VerifyRazorpayOrderInput);
   };
 
-  if (isCartLoading || isAddressLoading) {
+  if (
+    isCartLoading ||
+    isAddressLoading ||
+    isOrderTagLoading ||
+    isPreferenceLoading ||
+    isWrapLoading
+  ) {
     return (
       <div className="max-w-3xl mx-auto mt-16 text-center text-lg">
         Loading...
@@ -189,6 +210,7 @@ export default function OrderPage() {
     <OrderReview
       cart={cartData.cart}
       address={address.deliveryInfo}
+      orderOptionsPrice={totalOrderOptionPrice}
       isPlacingOrder={verifyMutation.isPending || isPaymentLoading}
       onPlaceOrder={handleStartPayment}
     />
