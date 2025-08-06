@@ -107,7 +107,7 @@ export default function CartSummary({
           Place Order
         </Button>
       ) : (
-        <Link href="/order/order-options" passHref>
+        <Link href="/order-options" passHref>
           <Button className="w-full py-2 px-4 rounded bg-green-600 hover:bg-green-700 text-white font-bold text-lg transition">
             Place Order
           </Button>
