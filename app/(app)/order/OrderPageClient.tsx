@@ -2,15 +2,11 @@
 
 import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { getCartItems } from "@/lib/service/cart";
-import { fetchDeliveryInfoById } from "@/lib/service/delivery";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-
 import OrderConfirmation from "./OrderConfirmation";
 import OrderReview from "./OrderReview";
-import Spinner from "@/components/Spinner"; // Import spinner here
-
+import Spinner from "@/components/Spinner";
 import { razorpayOrder, verifyRazorpayOrder } from "@/lib/service/order";
 import { useCart } from "@/hooks/cart";
 import { useDeliveryAddressById } from "@/hooks/delivery";
@@ -201,7 +197,14 @@ export default function OrderPage() {
   }
 
   if (paymentDone && placedOrder) {
-    return <OrderConfirmation order={placedOrder} />;
+    return (
+      <OrderConfirmation
+        order={placedOrder}
+        orderTagData={orderTagData}
+        wrapData={wrapData}
+        preferenceData={preferenceData}
+      />
+    );
   }
 
   if (!cartData?.cart || cartData.cart.cartItem.length === 0) {
@@ -219,6 +222,9 @@ export default function OrderPage() {
       orderOptionsPrice={totalOrderOptionPrice}
       isPlacingOrder={verifyMutation.isPending || isPaymentLoading}
       onPlaceOrder={handleStartPayment}
+      orderTagData={orderTagData}
+      wrapData={wrapData}
+      preferenceData={preferenceData}
     />
   );
 }
