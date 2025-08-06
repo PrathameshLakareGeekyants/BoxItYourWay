@@ -186,6 +186,30 @@ export default function MyOrdersPage() {
                     return null;
                   })}
                 </ul>
+                <div className="flex flex-wrap items-center gap-4 text-sm mt-4">
+                  <span>
+                    <span className="font-semibold">
+                      Tag ({order.tag.name}):
+                    </span>{" "}
+                    ₹{order.tag.price}
+                  </span>
+                  <span>
+                    <span className="font-semibold">
+                      Wrap ({order.wrap.name}):
+                    </span>{" "}
+                    ₹{order.wrap.price}
+                  </span>
+                  <span>
+                    <span className="font-semibold">
+                      Preference ({order.preference.preference}):
+                    </span>{" "}
+                    ₹{order.preference.price}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <span className="font-semibold">Total Amount: </span>{" "}
+                {order.totalPrice}
               </div>
             </div>
           ))}

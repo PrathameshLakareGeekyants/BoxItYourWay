@@ -31,11 +31,37 @@ type Order = {
   preferenceName?: string;
 };
 
-interface OrderConfirmationProps {
-  order: Order;
+interface OrderTag {
+  id: string;
+  name: string;
+  price: number;
 }
 
-export default function OrderConfirmation({ order }: OrderConfirmationProps) {
+interface Wrap {
+  id: string;
+  name: string;
+  price: number;
+}
+
+interface Preference {
+  id: string;
+  preference: string;
+  price: number;
+}
+
+interface OrderConfirmationProps {
+  order: Order;
+  orderTagData: OrderTag;
+  wrapData: Wrap;
+  preferenceData: Preference;
+}
+
+export default function OrderConfirmation({
+  order,
+  orderTagData,
+  wrapData,
+  preferenceData,
+}: OrderConfirmationProps) {
   console.log("order:", order);
 
   const orderItemsTotal = order.orderItems.reduce((sum, item) => {
@@ -87,9 +113,17 @@ export default function OrderConfirmation({ order }: OrderConfirmationProps) {
               <span>Items Total:</span>
               <span>₹{orderItemsTotal}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Extras (e.g. tags, wrap, preference):</span>
-              <span>₹{extras}</span>
+            <div className="flex items-center justify-between">
+              <span>Order Tag</span>
+              <span>₹{orderTagData.price}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Wrap</span>
+              <span>₹{wrapData.price}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Preference({preferenceData?.preference})</span>
+              <span>₹{preferenceData.price}</span>
             </div>
           </div>
 
