@@ -47,20 +47,28 @@ export async function POST(req: Request) {
         );
       }
 
-      const finalPrice = typeof price === "number" ? price : 10;
+      const finalPrice = 10;
       const orderTag = await prisma.orderTag.create({
-        data: { name, userId, isPublic, price: finalPrice },
+        data: { name, userId, isPublic: false, price: finalPrice },
       });
       return NextResponse.json({ orderTag }, { status: 201 });
     }
 
+    let finalPrice = 0;
+    if (isPublic === false) {
+      finalPrice = 10;
+    }
+
     const orderTag = await prisma.orderTag.create({
-      data: { name, userId, isPublic, price: 10 },
+      data: { name, userId, isPublic, price: finalPrice },
     });
 
     return NextResponse.json({ orderTag }, { status: 201 });
   } catch (error) {
     console.error("error for order tag route: ", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server error", serverError: error },
+      { status: 500 }
+    );
   }
 }
