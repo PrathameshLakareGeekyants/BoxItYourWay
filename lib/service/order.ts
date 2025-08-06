@@ -19,17 +19,26 @@ export async function verifyRazorpayOrder({
   razorpay_order_id,
   razorpay_signature,
   deliveryId,
+  wrapId,
+  orderTagId,
+  preferenceId,
 }: {
   razorpay_payment_id: string;
   razorpay_order_id: string;
   razorpay_signature: string;
   deliveryId: string;
+  wrapId: string;
+  orderTagId: string;
+  preferenceId: string;
 }) {
   return postData(RAZORPAY_VERIFY_ORDER_API, {
     razorpay_payment_id,
     razorpay_order_id,
     razorpay_signature,
     deliveryId,
+    wrapId,
+    orderTagId,
+    preferenceId,
   });
 }
 
