@@ -38,6 +38,13 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!orderTagId || !wrapId || !preferenceId) {
+      return NextResponse.json(
+        { error: "Order tags, wrap, or preference is missing." },
+        { status: 400 }
+      );
+    }
+
     // Verify Razorpay signature
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
@@ -98,6 +105,22 @@ export async function POST(req: Request) {
       })
       .filter((item) => item !== null && item !== undefined);
 
+    const [orderTag, wrap, preference] = await Promise.all([
+      prisma.orderTag.findUnique({ where: { id: orderTagId } }),
+      prisma.wrap.findUnique({ where: { id: wrapId } }),
+      prisma.preferencePrice.findUnique({ where: { id: preferenceId } }),
+    ]);
+
+    if (!orderTag || !wrap || !preference) {
+      return NextResponse.json(
+        { error: "One or more order options are invalid." },
+        { status: 400 }
+      );
+    }
+
+    totalPrice +=
+      (orderTag.price || 0) + (wrap.price || 0) + (preference.price || 0);
+
     const newOrder = await prisma.order.create({
       data: {
         userId,
@@ -153,7 +176,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Razorpay payment verification error:", error);
     return NextResponse.json(
-      { success: false, error: "Internal server error" },
+      { success: false, error: "Internal server error", serverError: error },
       { status: 500 }
     );
   }
