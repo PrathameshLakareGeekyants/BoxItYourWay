@@ -6,9 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AddressBook() {
+  const searchParams = useSearchParams();
+  const orderTagId = searchParams.get("orderTagId");
+  const wrapId = searchParams.get("wrapId");
+  const preferenceId = searchParams.get("preferenceId");
+
   const queryClient = useQueryClient();
   const router = useRouter();
   const {
@@ -149,12 +154,18 @@ export default function AddressBook() {
                   <div className="mt-2 text-sm text-muted-foreground">
                     Contact: {a.contact}
                   </div>
-                  <Button
-                    className="mt-4 w-full"
-                    onClick={() => router.push(`/order?addressId=${a.id}`)}
-                  >
-                    Deliver to this address
-                  </Button>
+                  {orderTagId && wrapId && preferenceId && (
+                    <Button
+                      className="mt-4 w-full"
+                      onClick={() =>
+                        router.push(
+                          `/order?orderTagId=${orderTagId}&wrapId=${wrapId}&preferenceId=${preferenceId}&addressId=${a.id}`
+                        )
+                      }
+                    >
+                      Deliver to this address
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
