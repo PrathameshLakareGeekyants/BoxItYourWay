@@ -8,3 +8,4 @@ export const DELIVERY_API = `${API_BASE_URL}/delivery`;
 export const ORDER_API = `${API_BASE_URL}/order`;
 export const RAZORPAY_ORDER_API = `${API_BASE_URL}/razorpay-order`;
 export const RAZORPAY_VERIFY_ORDER_API = `${API_BASE_URL}/verify-razorpay-payment`;
+export const ORDER_OPTIONS_API = `${API_BASE_URL}/order-options`;
