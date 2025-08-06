@@ -15,6 +15,7 @@ import OrderTagsComponent from "./OrderTagsComponent";
 import { ShoppingBag, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 type OrderTag = {
   id: string;
@@ -93,8 +94,30 @@ export default function OrderOptions() {
   const preferences = preferenceData?.preferences || [];
 
   const PreferenceIcon = ({ type }: { type: string }) => {
-    if (type === "BAG") return <ShoppingBag className="h-6 w-6 mr-2" />;
-    if (type === "BOX") return <Gift className="h-6 w-6 mr-2" />;
+    if (type === "BAG")
+      return (
+        <div className="relative w-full h-32 sm:h-36 md:h-40">
+          <Image
+            src="https://images.pexels.com/photos/7763936/pexels-photo-7763936.jpeg"
+            alt="Bag"
+            fill
+            className="rounded-md object-cover"
+            sizes="(max-width: 640px) 100vw, 33vw"
+          />
+        </div>
+      );
+    if (type === "BOX")
+      return (
+        <div className="relative w-full h-32 sm:h-36 md:h-40">
+          <Image
+            src="https://images.pexels.com/photos/360624/pexels-photo-360624.jpeg"
+            alt="Box"
+            fill
+            className="rounded-md object-cover"
+            sizes="(max-width: 640px) 100vw, 33vw"
+          />
+        </div>
+      );
     return null;
   };
 
@@ -134,15 +157,20 @@ export default function OrderOptions() {
                   <button
                     key={id}
                     onClick={() => setSelectedPreference(id)}
-                    className={`flex items-center border rounded-md px-4 py-3 cursor-pointer transition ${
-                      selectedPreference === id
-                        ? "border-blue-600 bg-blue-100"
-                        : "border-gray-300 bg-white hover:bg-gray-100"
-                    }`}
+                    className={`flex flex-col items-center border rounded-lg px-3 py-4 cursor-pointer w-50
+    ${
+      selectedPreference === id
+        ? "border-blue-600 bg-blue-100 shadow-sm"
+        : "border-gray-300 bg-white hover:shadow-md hover:bg-gray-50"
+    }
+    focus:outline-none focus:ring-2 focus:ring-blue-500 transition`}
+                    aria-label={`Select ${preference.toLowerCase()} preference`}
                   >
                     <PreferenceIcon type={preference} />
-                    <span className="font-medium">{preference}</span>
-                    <span className="ml-2 text-gray-600">(${price})</span>
+                    <span className="mt-2 font-medium text-base capitalize">
+                      {preference.toLowerCase()}
+                    </span>
+                    <span className="text-gray-500 text-sm">₹{price}</span>
                   </button>
                 )
               )}
