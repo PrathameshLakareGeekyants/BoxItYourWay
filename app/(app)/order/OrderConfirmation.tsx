@@ -62,8 +62,6 @@ export default function OrderConfirmation({
   wrapData,
   preferenceData,
 }: OrderConfirmationProps) {
-  console.log("order:", order);
-
   const orderItemsTotal = order.orderItems.reduce((sum, item) => {
     return sum + item.price * item.quantity;
   }, 0);

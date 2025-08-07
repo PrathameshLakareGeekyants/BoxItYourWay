@@ -47,8 +47,6 @@ export default function OrderOptions() {
     queryFn: getPreferenceData,
   });
 
-  console.log(preferenceData);
-
   const { data: session, status } = useSession();
   const router = useRouter();
 
