@@ -1,24 +1,10 @@
-"use client";
-import { useSession } from "next-auth/react";
-import { toast } from "sonner";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import CartPage from "./CartPage";
+import { Metadata } from "next";
+import CartPageHandler from "./CartPageHandler";
 
-export default function CartPageHandler() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+export const metadata: Metadata = {
+  title: "Cart",
+};
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      toast("You need to sign in to see cart.");
-      router.push("/signin");
-    }
-  }, [status, router]);
-
-  if (status === "unauthenticated") {
-    return null;
-  }
-
-  return <CartPage />;
+export default function CartPage() {
+  return <CartPageHandler />;
 }
