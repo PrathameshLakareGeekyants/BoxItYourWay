@@ -1,5 +1,10 @@
 import { getComboData } from "@/app/actions/comboAction";
 import ComboCard from "./ComboCard";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Combos",
+};
 
 export default async function ComboPage() {
   const combos = await getComboData();
