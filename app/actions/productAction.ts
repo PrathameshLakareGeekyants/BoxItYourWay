@@ -1,4 +1,6 @@
 "use server";
+import { PRODUCTS_API } from "@/constants";
+import { fetchData } from "@/lib/network/fetcher";
 import prisma from "@/lib/prisma";
 
 export async function getProductData() {
@@ -15,12 +17,7 @@ export async function getProductData() {
 }
 
 export async function getProductById(id: string) {
-  const product = await prisma.product.findUnique({
-    where: { id },
-    include: {
-      category: true,
-    },
-  });
+  const product = fetchData(`${PRODUCTS_API}/${id}`);
 
-  return product;
+  return await product;
 }
