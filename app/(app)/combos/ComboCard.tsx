@@ -98,10 +98,19 @@ export default function ComboCard({ combo, isPublic }: ComboCardProps) {
         )}
       </div>
       {combo?.totalPrice && (
-        <div className="my-2 text-base font-semibold text-gray-900">
-          Total Price: ₹{combo.totalPrice.toFixed(2)}
+        <div className="my-2 text-base font-semibold text-gray-900 flex items-center gap-3">
           {combo.discountAmount && combo.discountAmount > 0 && (
-            <span className="ml-3 text-sm font-normal text-gray-600">
+            <span className="text-sm font-normal text-gray-500 line-through">
+              ₹{(combo.totalPrice + combo.discountAmount).toFixed(2)}
+            </span>
+          )}
+
+          <span className="text-lg font-bold text-gray-900">
+            ₹{combo.totalPrice.toFixed(2)}
+          </span>
+
+          {combo.discountAmount && combo.discountAmount > 0 && (
+            <span className="text-sm font-normal text-green-600">
               Save ₹{combo.discountAmount.toFixed(2)}
             </span>
           )}

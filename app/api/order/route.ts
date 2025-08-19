@@ -17,7 +17,7 @@ export async function GET() {
       where: { userId },
       orderBy: { createdAt: "desc" },
       include: {
-        orderItem: {
+        orderItems: {
           include: {
             combo: {
               include: {
@@ -30,6 +30,9 @@ export async function GET() {
           },
         },
         delivery: true,
+        tag: true,
+        wrap: true,
+        preference: true,
       },
     });
 
@@ -53,7 +56,7 @@ export async function POST(req: Request) {
     }
     const userId = session.user.id;
     const body = await req.json();
-    const { deliveryId } = body;
+    const { deliveryId, orderTagId, wrapId, preferenceId } = body;
 
     if (!deliveryId || !userId) {
       return NextResponse.json(
@@ -117,10 +120,13 @@ export async function POST(req: Request) {
         userId,
         deliveryId,
         totalPrice,
-        orderItem: { create: orderItemsData },
+        orderTagId,
+        wrapId,
+        preferenceId,
+        orderItems: { create: orderItemsData },
       },
       include: {
-        orderItem: {
+        orderItems: {
           include: {
             combo: {
               include: {

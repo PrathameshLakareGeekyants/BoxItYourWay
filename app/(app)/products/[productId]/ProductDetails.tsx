@@ -1,15 +1,28 @@
 import { getProductById } from "@/app/actions/productAction";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { ShoppingCart } from "lucide-react";
 import AddToCombo from "@/components/combo/AddToCombo";
 import AddToCart from "@/components/cart/AddToCart";
+
+interface Category {
+  name: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  imageUrl: string;
+  category: Category;
+  description: string;
+  price: number;
+  stock: number;
+  createdAt: Date;
+}
 
 export default function ProductDetail({
   product,
 }: {
-  product: Awaited<ReturnType<typeof getProductById>>;
+  product: Product | null;
 }) {
   if (!product) {
     return <div>Product not found</div>;

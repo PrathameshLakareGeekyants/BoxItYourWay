@@ -24,6 +24,7 @@ model User {
   cart Cart?
   deliveryInfo DeliveryInfo[]
   order Order[]
+  orderTag OrderTag[]
 }
 
 model Product {
@@ -118,17 +119,52 @@ model DeliveryInfo{
   updatedAt    DateTime @updatedAt
 }
 
+model OrderTag{
+  id String @id @default(uuid())
+  name String @unique
+  isPublic Boolean @default(false)
+  price Int @default(0)
+  createdBy User @relation(fields: [userId], references: [id])
+  userId String
+  orders Order[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Wrap{
+  id String @id @default(uuid())
+  name String @unique
+  isPremium Boolean @default(false)
+  price Int @default(0)
+  imageUrl  String
+  orders Order[]
+}
+
+model PreferencePrice {
+  id         String     @id @default(uuid())
+  preference Preference @unique
+  price      Int
+  orders Order[]
+}
+
 model Order{
   id String @id @default(uuid())
   user User @relation(fields: [userId], references: [id])
   userId String
   delivery DeliveryInfo @relation(fields: [deliveryId], references: [id])
   deliveryId String
+  deliveryCharge Int @default(250)
   status OrderStatus @default(PENDING)
   totalPrice Int
-  orderItem OrderItem[]
+  orderItems OrderItem[]
   razorpayOrderId  String? @unique 
   paymentStatus    String?
+  tag OrderTag @relation(fields: [orderTagId], references: [id])
+  orderTagId String
+  wrap Wrap @relation(fields: [wrapId], references: [id])
+  wrapId String
+  preference PreferencePrice @relation(fields: [preferenceId], references: [id])
+  preferenceId String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -158,4 +194,9 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+enum Preference {
+  BAG
+  BOX
 }

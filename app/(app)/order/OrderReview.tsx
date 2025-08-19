@@ -39,11 +39,33 @@ interface Address {
   contact: string;
 }
 
+interface OrderTag {
+  id: string;
+  name: string;
+  price: number;
+}
+
+interface Wrap {
+  id: string;
+  name: string;
+  price: number;
+}
+
+interface Preference {
+  id: string;
+  preference: string;
+  price: number;
+}
+
 interface OrderReviewProps {
   cart: Cart;
   address: Address;
   isPlacingOrder: boolean;
+  orderOptionsPrice: number;
   onPlaceOrder: () => void;
+  orderTagData: OrderTag;
+  wrapData: Wrap;
+  preferenceData: Preference;
 }
 
 export default function OrderReview({
@@ -51,6 +73,10 @@ export default function OrderReview({
   address,
   isPlacingOrder,
   onPlaceOrder,
+  orderOptionsPrice,
+  orderTagData,
+  wrapData,
+  preferenceData,
 }: OrderReviewProps) {
   return (
     <div className="max-w-3xl mx-auto mt-8 space-y-6">
@@ -93,6 +119,18 @@ export default function OrderReview({
                 </span>
               </li>
             ))}
+            <li className="flex items-center justify-between">
+              <span>Order Tag</span>
+              <span>₹{orderTagData.price}</span>
+            </li>
+            <li className="flex items-center justify-between">
+              <span>Wrap</span>
+              <span>₹{wrapData.price}</span>
+            </li>
+            <li className="flex items-center justify-between">
+              <span>Preference({preferenceData?.preference})</span>
+              <span>₹{preferenceData.price}</span>
+            </li>
           </ul>
           <div className="mt-4 flex justify-end font-semibold">
             Total: ₹
@@ -105,7 +143,7 @@ export default function OrderReview({
                   ? item.combo.totalPrice
                   : 0),
               0
-            )}
+            ) + orderOptionsPrice}
           </div>
         </CardContent>
       </Card>
