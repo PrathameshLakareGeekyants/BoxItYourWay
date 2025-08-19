@@ -1,5 +1,10 @@
 import React, { Suspense } from "react";
 import AddressView from "./AddressView";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Address",
+};
 
 export default function OrderPage() {
   return (
