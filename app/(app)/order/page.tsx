@@ -1,5 +1,10 @@
 import React, { Suspense } from "react";
 import OrderPageClient from "./OrderPageClient";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Order",
+};
 
 export default function OrderPage() {
   return (
